@@ -19,7 +19,6 @@ protocol ControllerPadViewControllerDelegate: class {
 
 var sendCommand : String?
 
-
 public class RCViewController: UIViewController, UITextViewDelegate {
     //Data
     //Page ID
@@ -30,18 +29,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     var btViewConstraints = [NSLayoutConstraint]()
     var isLandscape:Bool = true
     var rcBluetooth: RCBluetooth = RCBluetooth()
-    
+    var rcCommand: RCCommand = RCCommand()
     var commandsForAssessment:[PlaygroundValue] = [PlaygroundValue]()
-    
     private let buttonPrefix = "!B"
     static let prefix = "!B"
    
     
-    
-    
-    
-    
-    //UI
+    //Button Setup
     public var commentText:UITextView!
     var forwardButton : UIButton!
     var backButton: UIButton!
@@ -50,17 +44,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     var blePeripheral: CBPeripheral!
     //Tagforward:5, back:6, left:7, right: 8
     
-    
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
     
     func updateTextView() {
         let newLine = "\n"
-        
         var newText = commentText.text!
-        
         newText += printString
-//      newText.append(printString)
         commentText.text = newText
     }
     
@@ -79,14 +69,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func  viewDidLoad() {
         super.viewDidLoad()
+        rcBluetooth.onDataWritten = onCommandCompleted
         UISetup()
         self.commentText.delegate = self
-        
-        
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
-        
-        
     }
+
+    
     
     public override func viewDidAppear(_ animated: Bool) { // Notifies the view controller that its view was added to a view hierarchy.
         super.viewDidAppear(animated)
@@ -108,42 +97,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         }
     }
 
-   
-//
-//    func appendCRC(data:NSData)->NSMutableData {
-//        
-//        let mData = NSMutableData(length: 0)
-//        mData!.appendData(data as Data)
-//        appendCRCmutable(mData!)
-//        return mData!
-//        
-//    }
-    
-   //BUTTON -> TRANSMITTION
-    
-    
-    
-    
-    
-//    func controlPadButtonPressedWithTag(_ tag:Int) {
-//        
-//        let str = NSString(string: "!B" + "\(tag)" + "1")
-//        let data = NSData(bytes: str.utf8String, length: str.length)
-//        commentText.text = "Button Pressed = " + "\(str)"
-//        //  delegate?.sendData(appendCRC(data))
-//        
-//    }
-//    
-//    func controlPadButtonReleasedWithTag(_ tag:Int) {
-//        
-//        let str = NSString(string: "!B" + "\(tag)" + "0")
-//        let data = NSData(bytes: str.utf8String, length: str.length)
-//        commentText.text = "Button Released = " + "\(str)"
-//        
-//        //  delegate?.sendData(appendCRC(data))
-//    }
-//    
-    
     fileprivate func sendTouchEvent(_ tag: Int, isPressed: Bool) {
         if let delegate = delegate {
         delegate.onSendControllerPadButtonStatus(tag: tag, isPressed: isPressed)
@@ -155,99 +108,85 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchDownForward(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        let buttonMessage = "!B\(sender.tag)\(isPressed)"
-        commentText.text = "\(bleStatus!)"
-        commentText.text = "\(sendCommand!)"
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Go"), object: nil)
+       rcBluetooth.moveForward()
     }
     
   
     func onTouchUpForward(_ sender: UIButton) {
       let isPressed = false
         sendTouchEvent(sender.tag, isPressed: true)
-       NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Stop"), object: nil)
+      rcBluetooth.stopForward()
     
     }
-    
-
     
     func onTouchDownBack(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-       // let buttonMessage = "!B\(sender.tag)\(isPressed)"
-        
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "GoBack"), object: nil)
+      rcBluetooth.moveBack()
     }
     
     
     func onTouchUpBack(_ sender: UIButton) {
         let isPressed = false
-        sendTouchEvent(sender.tag, isPressed: true)
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "StopBack"), object: nil)
-        
+        rcBluetooth.stopBack()
     }
     
     
     func onTouchDownRight(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        // let buttonMessage = "!B\(sender.tag)\(isPressed)"
-        
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "GoRight"), object: nil)
+        rcBluetooth.turnRight()
     }
     
     
     func onTouchUpRight(_ sender: UIButton) {
         let isPressed = false
-        sendTouchEvent(sender.tag, isPressed: true)
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "StopRight"), object: nil)
-        
+        rcBluetooth.stopRight()
     }
 
     
     func onTouchDownLeft(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        // let buttonMessage = "!B\(sender.tag)\(isPressed)"
-        
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "GoLeft"), object: nil)
+        rcBluetooth.turnLeft()
     }
     
     
     func onTouchUpLeft(_ sender: UIButton) {
         let isPressed = false
-        sendTouchEvent(sender.tag, isPressed: true)
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "StopLeft"), object: nil)
-        
+        rcBluetooth.stopLeft()
+      //  rcCommand.runCommands()
     }
     
     
     
+ 
     
+    func addCommandToAssessmentArray(_ command:PlaygroundValue){
+        printLog(newString: "addCommandToAssessmentArray called")
+        if(self.commandsForAssessment.count <= 30){
+            self.commandsForAssessment.append(command)
+        }
+    }
     
-    
-    
-    
-    
-    
-    
-//----------------------------------------------------------
-    func onTouchDown(_ sender: UIButton) {
-        sendTouchEvent(sender.tag, isPressed: true)
-        let isPressed = true
-        // let buttonMessage = "!B\(sender.tag)\(isPressed)"
-        
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "GoBack"), object: nil)
+    func processCommand(_ command:PlaygroundValue){
+        printLog(newString: #function)
+        rcCommand.sendRobotCommand(rcBluetooth, command)
     }
     
     
-    func onTouchUp(_ sender: UIButton) {
-        let isPressed = false
-        sendTouchEvent(sender.tag, isPressed: true)
-        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "StopBack"), object: nil)
-        
+    
+    func onCommandCompleted(){
+        printLog(newString: "Command Completed")
+        self.sendMessage(.string(Constants.COMMAND_FINISHED))
     }
     
+    func onCommandCompleted2(){
+        //printLog(newString: "Test")
+      //  self.sendMessage(.string(Constants.COMMAND_FINISHED))
+commentText.text = "Test"
+  
+    }
     
     func UISetup() {
     
@@ -266,7 +205,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
         // Setup debug log
         commentText = UITextView(frame: CGRect(x: 0, y: 350, width: 520, height: 320))
-        commentText.text = "\(bleStatus!)"
+      //  commentText.text = "\(bleStatus!)"
         commentText.isEditable = false
         commentText.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         commentText.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
@@ -304,8 +243,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
         
        view.addSubview(forwardButton)
-//
-//
+
+
         backButton = UIButton(frame: CGRect(x: 320, y: 210, width: 83, height: 60))
         backButton.setTitle("Back", for: .normal)
         backButton.setTitleColor(UIColor.white, for: .normal)
@@ -375,10 +314,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
    
     
-    
-    
-    
-    
     func setupLandscapeView(_ size:CGSize){
         print("setupLandscapeView():\(size)")
         isLandscape = true
@@ -401,8 +336,12 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         NSLayoutConstraint.activate(btViewConstraints)
     }
     
-    
-   
+    func exitProgram(){
+        // All commands executed
+        let message: PlaygroundValue = .array(commandsForAssessment)
+        sendMessage(message)
+        commandsForAssessment.removeAll()
+    }
     
     class ConnectionViewDelegate: PlaygroundBluetoothConnectionViewDelegate, PlaygroundBluetoothConnectionViewDataSource {
        
@@ -454,32 +393,79 @@ public class RCViewController: UIViewController, UITextViewDelegate {
                             rssi: Double) -> Bool {
             return true
         }
-
-    
     }
-    
 }
 
 
 
 
 extension RCViewController: PlaygroundLiveViewMessageHandler {
+    
     public func liveViewMessageConnectionOpened(){
-        self.commentText.text = "liveViewMessageConnectionMade"
-      //  isShowingResult = false
-    }
+        printLog(newString: "<Live View Message Connection Made>  ")
+       }
     
     public func liveViewMessageConnectionClosed() {
         commandsForAssessment.removeAll()
         //RCCommand.sensorType = nil
     }
     
+    //Recieve message from Constant.swift
+    public func receive(_ message: PlaygroundValue) {
+       printLog(newString: #function)
     
-    public func receive(_ message: PlaygroundValue){
+    if case let .string(command) = message {
+        if command.isEqual(CommandType.COMMAND_EXIT_PROGRAM.rawValue){
+            exitProgram()
+        }
         
+        if rcBluetooth.isConnected {
+            printLog(newString: "Bluetooth is Online.")
+            addCommandToAssessmentArray(message)
+           processCommand(message)
+            printLog(newString: "Array count \(commandsForAssessment.count)")
+            printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+    
     }
+            
+            else{ // Connection not ready
+                printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
+                sendMessage(.string(Constants.PROGRAM_FINISHED))
+            }
+        }
     
-    
-    
+   else if case let .dictionary(dict) = message { // Connect to robot
+            printLog(newString: "Send message; Command String attempt made")
+            processCommand(message)
+            addCommandToAssessmentArray(message)
+        }
+        
+        else if case let .boolean(result) = message { // Program Results
+          //  programStateImage.stopAnimating()
+            //isShowingResult = true
+//            if result{
+//                myPrint("Receive result from Constants.swift: feedback_success")
+//                setCommandAnimationAsync(CommandType.FEEDBACK_SUCCESS)
+//                if robotConnection.isConnected {
+//                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_AWESOME.rawValue))
+//                }
+//            }
+//            else{
+//                myPrint("Receive result from Constants.swift: feedback_fail")
+//                setCommandAnimationAsync(CommandType.FEEDBACK_FAIL)
+//                if robotConnection.isConnected {
+//                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_WHA.rawValue))
+//                }
+//            }
+            sendMessage(.string(Constants.PROGRAM_FINISHED))
+        }
+        
 }
+    
+    public func sendMessage(_ message: PlaygroundValue) {
+        printLog(newString: "<Send message to Contants.swift>")
+        send(message)
+    }
+}
+
  

@@ -1,35 +1,34 @@
-//#-hidden-code
-import SceneKit
-import PlaygroundSupport
-//#-end-hidden-code
-
 /*:#localized(key: "FirstProseBlock")
- **Goal**: Connect and control your mini R.C.
-  
- In this playground, you will learn how to connect to RC that responds to code.
+ **Goal:** Learn how to use basic movement functions.
  
- 1. Turn on Bluetooth to activate your R.C.
- 2. Tap the **Connect RC** button in the upper-right corner of Live View.
- 3. Choose your RC shown on the list.
+ It’s time to race! Start your engines!
+ 
+ 
+ Use your Swift programming skills to control Dash with **basic motion** function calls like `moveForward()`, `turnRight()`, `turnLeft()`, and  `moveBack()`.
+ 
  */
-//#-hidden-code
-//func dance() {
-//    moveRight()
-//    moveLeft()
-//    for _ in 1 ..<3 {
-//        spin()
-//    }
-//}
-//#-end-hidden-code
-//#-hidden-code
-//////////////////playgroundPrologue()
-//#-end-hidden-code
 //#-code-completion(everything, hide)
-//#-code-completion(identifier, show, dance())
-//#-editable-code
-func dance()
+//#-code-completion(identifier, show, moveForward(), turnLeft(), moveBack(), turnRight())
+//#-hidden-code
+setup()
+//#-end-hidden-code
+//#-editable-code 
+turnRight()
 //#-end-editable-code
 //#-hidden-code
-//////////////////playgroundEpilogue()
-//#-end-hidden-code
 
+/*
+ turnRight()
+ moveForward()
+ turnLeft()
+ moveForward()
+ turnLeft()
+ moveForward()
+ moveForward()
+ turnRight()
+ moveForward()
+ turnRight()
+ moveForward()
+ turnLeft()
+ */
+//#-end-hidden-code
