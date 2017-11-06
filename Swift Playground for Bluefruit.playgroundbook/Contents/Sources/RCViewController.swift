@@ -33,7 +33,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     var commandsForAssessment:[PlaygroundValue] = [PlaygroundValue]()
     private let buttonPrefix = "!B"
     static let prefix = "!B"
-   
+ //  public var onDataWritten:(()->Void)?
     
     //Button Setup
     public var commentText:UITextView!
@@ -155,23 +155,27 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchUpLeft(_ sender: UIButton) {
         let isPressed = false
         rcBluetooth.stopLeft()
-      //  rcCommand.runCommands()
+
     }
     
-    
-    
- 
-    
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
-        printLog(newString: "addCommandToAssessmentArray called")
+        printLog(newString: " addCommandToAssessmentArray: Phase #1 - Function is called")
+        
         if(self.commandsForAssessment.count <= 30){
             self.commandsForAssessment.append(command)
+            printLog(newString: " addCommandToAssessmentArray: Phase #2")
         }
+        printLog(newString: " addCommandToAssessmentArray: Phase #3")
     }
     
     func processCommand(_ command:PlaygroundValue){
         printLog(newString: #function)
         rcCommand.sendRobotCommand(rcBluetooth, command)
+    }
+    
+    func processCommandForDuration(_ item:PlaygroundValue){
+        printLog(newString: #function)
+        rcCommand.sendRobotDuration(item)
     }
     
     
@@ -403,11 +407,12 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
     
     public func liveViewMessageConnectionOpened(){
         printLog(newString: "<Live View Message Connection Made>  ")
+        
        }
     
     public func liveViewMessageConnectionClosed() {
         commandsForAssessment.removeAll()
-        //RCCommand.sensorType = nil
+        //PlaygroundPage.current.finishExecution()
     }
     
     //Recieve message from Constant.swift
@@ -423,14 +428,13 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
             printLog(newString: "Bluetooth is Online.")
             addCommandToAssessmentArray(message)
            processCommand(message)
+            printLog(newString: "\(message)")
             printLog(newString: "Array count \(commandsForAssessment.count)")
             printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
-    
     }
             
             else{ // Connection not ready
-                printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
-                sendMessage(.string(Constants.PROGRAM_FINISHED))
+                printLog(newString: "Connect To RC Before Sending Commands.")
             }
         }
     
@@ -458,12 +462,29 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
 //                }
 //            }
             sendMessage(.string(Constants.PROGRAM_FINISHED))
+    }
+    
+    else if case let item = message {
+        
+        if rcBluetooth.isConnected {
+            printLog(newString: "Integer Sent: \(message)")
+            addCommandToAssessmentArray(message)
+            processCommandForDuration(message)
+            printLog(newString: "Array count \(commandsForAssessment.count)")
+            printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+            
+        }  else{ // Connection not ready
+            printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
+            sendMessage(.string(Constants.PROGRAM_FINISHED))
         }
+        
+    }
         
 }
     
     public func sendMessage(_ message: PlaygroundValue) {
         printLog(newString: "<Send message to Contants.swift>")
+       rcCommand.durationReset()
         send(message)
     }
 }

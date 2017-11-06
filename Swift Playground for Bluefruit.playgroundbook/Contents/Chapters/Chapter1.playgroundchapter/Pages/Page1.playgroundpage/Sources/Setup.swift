@@ -38,9 +38,11 @@ public func assessment(_ playgroundValue:PlaygroundValue)->Bool{
     PlaygroundPage.current.assessmentStatus = .pass(message: NSLocalizedString("### Pass! \n Now that’s what I call a victory dance!\n\n[**Next Page**](@next)", comment: ""))
     
     if(result){
+        printLog(newString: "PASS!")
         PlaygroundPage.current.assessmentStatus = .pass(message: NSLocalizedString("### Pass Message. \n\n[**Next Page**](@next)", comment: ""))
     }
     else{
+        printLog(newString: "Fail")
         PlaygroundPage.current.assessmentStatus = .fail(hints: failureHints, solution: nil)
     }
     return result

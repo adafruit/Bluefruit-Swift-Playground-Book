@@ -21,8 +21,6 @@ public class Constants: NSObject {
 
         public static let COMMAND_FINISHED = "CommandFinishedtestS"
     
-        public static let SENSOR_RECEIVED = "SensorReceived"
-    
         public static let PROGRAM_FINISHED = "ProgramFinished"
     
     

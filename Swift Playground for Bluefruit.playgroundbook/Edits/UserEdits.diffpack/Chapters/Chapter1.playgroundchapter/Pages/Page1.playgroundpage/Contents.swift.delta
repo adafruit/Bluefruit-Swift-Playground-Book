@@ -6,29 +6,13 @@
 	<array>
 		<dict>
 			<key>ModifiedContent</key>
-			<string>moveForward()
-</string>
+			<string>3</string>
 			<key>ModifiedRange</key>
-			<string>{493, 14}</string>
+			<string>{1274, 1}</string>
 			<key>OriginalContent</key>
 			<string></string>
 			<key>OriginalRange</key>
-			<string>{493, 0}</string>
-		</dict>
-		<dict>
-			<key>ModifiedContent</key>
-			<string>
-
-
-
-
-</string>
-			<key>ModifiedRange</key>
-			<string>{519, 5}</string>
-			<key>OriginalContent</key>
-			<string></string>
-			<key>OriginalRange</key>
-			<string>{505, 0}</string>
+			<string>{1274, 0}</string>
 		</dict>
 	</array>
 	<key>File</key>

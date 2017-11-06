@@ -44,6 +44,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     public var isConnected: Bool = false
    
     public var onDataWritten:(()->Void)?
+   
     public override init() {
         super.init()
         centralManager = PlaygroundBluetoothCentralManager(services: [BLEService_UUID], queue: .global())
@@ -98,7 +99,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     public func sendRcData(_ data: Data, _ duration: Int){
         blePeripheral!.writeValue(data, for: txCharacteristic!, type: CBCharacteristicWriteType.withResponse)
        // printLog(newString: "Data sent: \(data)")
-       DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(duration) ) {
+       DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(duration) ) {
             self.onDataWritten?()
              self.stopForward()
         }
@@ -151,12 +152,6 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
         }
     }
     
-    
-    
-    
-    
-    
-    
     // Write function
     public func writeValue22(data: String){
   let data = (data as NSString).data(using: String.Encoding.utf8.rawValue)
@@ -167,8 +162,6 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
             }
         }
     }
-
-    
     
     
     public func stopAllAction() {
@@ -192,8 +185,6 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     }
     
     
-    
-    
     public func stopForward(){
         
         printLog(newString: "<Forward Stopped>  ")
@@ -204,54 +195,54 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
         printLog(newString: "<Back>  ")
         
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.stopBack), userInfo: nil, repeats: false)
-       
+    
+    writeValue22(data: backString)
         //sendRcData(backString)
         }
 
     
    public func stopBack(){
             printLog(newString: "<Back Stopped>  ")
+    writeValue22(data: backStopString )
           //  sendRcData(backStopString)
         }
 
 
    public func turnRight(){
         printLog(newString: "<Turning Right>  ")
-        
+    writeValue22(data: rightString)
         //sendRcData(rightString)
     }
 
    public func stopRight(){
         printLog(newString: "<Right Stopped>  ")
        // sendRcData(rightStop)
+    writeValue22(data: rightStop)
     }
 
    public func turnLeft(){
         printLog(newString: "<Turning Left>  ")
         
-        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.stopLeft), userInfo: nil, repeats: false)
-        
+    
+         writeValue22(data: leftString)
         //sendRcData(leftString)
     }
 
    public func stopLeft(){
         printLog(newString: "<Left Stopped>  ")
       //  sendRcData(leftStop)
+    writeValue22(data: leftStop)
+
     }
 
-    
-    
-   
+
     func sendTouchEvent(_ tag: Int, isPressed: Bool) {
         let message = "!B\(tag)\(isPressed ? "1" : "0")"
         if let data = message.data(using: String.Encoding.utf8) {
             sendDataWithCrc(data)
-           
-          //  sendRcData(data: forwardString)
         }
     }
 
-    
     
     func stringToData(string: String) {
         let data = string.data(using: String.Encoding.utf8,allowLossyConversion: true)
@@ -296,7 +287,6 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
         if characteristic.uuid.isEqual(BLE_Characteristic_uuid_Rx) {
             onCharacteristicsUpdated?(characteristic.value!)
         }
-        
     }
     
     
@@ -313,8 +303,6 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
    
         }
     }
-    
-    
     
 }
 

@@ -8,13 +8,17 @@
 import Foundation
 import PlaygroundSupport
 
+
+
+
 public enum CommandType: String {
     
-    case COMMAND_MOVE_FORWARD   = "command_moveForward"
-    case COMMAND_MOVE_BACKWARD  = "command_moveBackward"
-    case COMMAND_TURN_RIGHT     = "command_turnRight"
-    case COMMAND_TURN_LEFT      = "command_turnLeft"
-    case COMMAND_EXIT_PROGRAM   = "ExitProgram"
+    case COMMAND_MOVE_FORWARD   =  "command_moveForward"
+    case COMMAND_MOVE_BACKWARD  =  "command_moveBackward"
+    case COMMAND_TURN_RIGHT     =  "command_turnRight"
+    case COMMAND_TURN_LEFT      =  "command_turnLeft"
+    case COMMAND_PAUSE           = "command_pause"
+    case COMMAND_EXIT_PROGRAM   =  "ExitProgram"
     
 }
 
@@ -39,12 +43,14 @@ public class CommandManager: CommandPauseDelegate {
     public var returnValue = false
     
     var command: PlaygroundValue = .string("")
+    var userInt: Int?
+    
+   
     
     public init(){
     }
     
     public func sendCommand(_ commandData:PlaygroundValue) {
-        printLog(newString: #function)
         let page = PlaygroundPage.current
         if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
             proxy.send(commandData)
@@ -53,6 +59,8 @@ public class CommandManager: CommandPauseDelegate {
         isReadyForMoreCommands = false
          wait()
     }
+    
+    
     
     public func moveForward(){
         command = .string(CommandType.COMMAND_MOVE_FORWARD.rawValue)
@@ -84,4 +92,20 @@ public class CommandManager: CommandPauseDelegate {
         sendCommand(command)
     }
     
+    public func pause(){
+        command = .string(CommandType.COMMAND_PAUSE.rawValue)
+        sendCommand(command)
+       
+    }
+    
+    public func testForward(){
+        command = .string(CommandType.COMMAND_MOVE_FORWARD.rawValue)
+  
+        sendCommand(command)
+        printLog(newString: #function)
+    }
+ 
+    public func intTaker(){
+    printLog(newString: "Hello")
+    }
 }

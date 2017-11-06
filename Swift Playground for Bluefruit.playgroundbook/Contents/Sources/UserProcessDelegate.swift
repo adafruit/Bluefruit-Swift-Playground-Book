@@ -31,13 +31,23 @@ public class UserProcessDelegate: PlaygroundRemoteLiveViewProxyDelegate {
     
     //Receive message from live view
     public func remoteLiveViewProxy(_ remoteLiveViewProxy: PlaygroundRemoteLiveViewProxy, received message: PlaygroundValue) {
+      
         if case let .string(text) = message {
             if text.isEqual(Constants.COMMAND_FINISHED){
                 // Indicate that the handler is ready for more commands.
                 pauseHandler?.isReadyForMoreCommands = true
+            //    printLog(newString: "UserProcess-remoteLiveViewProxy-TEST")
             }
         }
  
+       if case let item = message {
+
+                pauseHandler?.isReadyForMoreCommands = true
+                //    printLog(newString: "UserProcess-remoteLiveViewProxy-TEST")
+        }
+        
+        
+        
         // Update Hints and Assessments
         if case let .array(commands) = message {
             let result:Bool = (onAssessment?(message))!
