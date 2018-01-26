@@ -3,8 +3,8 @@
 //  
 //
 //  Created by Trevor Beaton on 8/23/17.
-//
-//
+//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+
 
 import UIKit
 import Foundation

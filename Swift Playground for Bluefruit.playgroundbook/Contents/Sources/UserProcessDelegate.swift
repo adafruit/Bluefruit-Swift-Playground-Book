@@ -3,11 +3,11 @@
 //  
 //
 //  Created by Trevor Beaton on 9/20/17.
-//
+//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+
 
 import Foundation
 import PlaygroundSupport
-
 
 public class UserProcessDelegate: PlaygroundRemoteLiveViewProxyDelegate {
     

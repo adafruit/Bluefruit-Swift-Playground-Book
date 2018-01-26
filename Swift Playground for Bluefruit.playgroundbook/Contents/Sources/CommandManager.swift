@@ -2,8 +2,8 @@
 //  CommandManager.swift
 //  
 //
-//  Created by Trevor Beaton on 9/20/17.
-//
+//  Created by Trevor Beaton on 12/14/17.
+//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
 
 import Foundation
 import PlaygroundSupport

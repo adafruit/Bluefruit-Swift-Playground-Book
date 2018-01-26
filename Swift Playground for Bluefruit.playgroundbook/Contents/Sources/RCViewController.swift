@@ -1,7 +1,7 @@
 //
 //  RCViewController.swift
-//  
 //
+//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
 //  Created by Trevor Beaton on 8/22/17.
 //
 //
@@ -28,12 +28,12 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     let bleViewDelegate = ConnectionViewDelegate()
     var btViewConstraints = [NSLayoutConstraint]()
     var isLandscape:Bool = true
+    var isPortraitMode:Bool = true
     var rcBluetooth: RCBluetooth = RCBluetooth()
     var rcCommand: RCCommand = RCCommand()
     var commandsForAssessment:[PlaygroundValue] = [PlaygroundValue]()
     private let buttonPrefix = "!B"
-    static let prefix = "!B"
- //  public var onDataWritten:(()->Void)?
+
     
     //Button Setup
     public var commentText:UITextView!
@@ -42,7 +42,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     var leftButton: UIButton!
     var rightButton: UIButton!
     var blePeripheral: CBPeripheral!
-    //Tagforward:5, back:6, left:7, right: 8
     
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
@@ -69,19 +68,19 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func  viewDidLoad() {
         super.viewDidLoad()
-        rcBluetooth.onDataWritten = onCommandCompleted
+      
+      
+      rcBluetooth.onDataWritten = onCommandCompleted
         UISetup()
         self.commentText.delegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
     }
 
-    
-    
-    public override func viewDidAppear(_ animated: Bool) { // Notifies the view controller that its view was added to a view hierarchy.
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
-    public override func viewDidLayoutSubviews() { // Called to notify the view controller that its view has just laid out its subviews.
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
     }
@@ -127,7 +126,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     
     func onTouchUpBack(_ sender: UIButton) {
-        let isPressed = false
+      sendTouchEvent(sender.tag, isPressed: true)
+      let isPressed = false
         rcBluetooth.stopBack()
     }
     
@@ -135,7 +135,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchDownRight(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        rcBluetooth.turnRight()
+        rcBluetooth.turnLeft()
     }
     
     
@@ -148,7 +148,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchDownLeft(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        rcBluetooth.turnLeft()
+        rcBluetooth.turnRight()
     }
     
     
@@ -186,10 +186,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
     
     func onCommandCompleted2(){
-        //printLog(newString: "Test")
-      //  self.sendMessage(.string(Constants.COMMAND_FINISHED))
-commentText.text = "Test"
-  
+      commentText.text = "Test"
     }
     
     func UISetup() {
@@ -202,7 +199,7 @@ commentText.text = "Test"
         bleView.delegate = bleViewDelegate
         bleView.dataSource = bleViewDelegate
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) {
-            self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()
+        self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()
         }
         self.view.addSubview(bleView)
 
@@ -313,7 +310,9 @@ commentText.text = "Test"
         }
         else{
             setupPortraitView(CGSize(width: self.view.frame.width, height: self.view.frame.height/2))
-        }
+       
+      
+      }
         
     }
    
@@ -332,7 +331,7 @@ commentText.text = "Test"
     func setupPortraitView(_ size:CGSize){
         print("setupPortraitView():\(size)")
         isLandscape = false
-        
+      
         NSLayoutConstraint.deactivate(btViewConstraints)
         btViewConstraints.removeAll()
         btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 75))
@@ -353,7 +352,6 @@ commentText.text = "Test"
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, itemForPeripheral peripheral: CBPeripheral, withAdvertisementData advertisementData: [String : Any]?) -> PlaygroundBluetoothConnectionView.Item {
             // Displays UI elements for connectivity
             let name = peripheral.name ?? NSLocalizedString("Unknown Device", comment: "")
-           
             let icon = UIImage(imageLiteralResourceName:"Images/adafruit_logo_small copy.png")
             let issueIcon = icon
             return PlaygroundBluetoothConnectionView.Item(name: name, icon: icon, issueIcon: issueIcon, firmwareStatus: nil, batteryLevel: nil)
@@ -399,8 +397,6 @@ commentText.text = "Test"
         }
     }
 }
-
-
 
 
 extension RCViewController: PlaygroundLiveViewMessageHandler {
