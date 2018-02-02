@@ -135,7 +135,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchDownRight(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        rcBluetooth.turnLeft()
+        rcBluetooth.turnRight()
     }
     
     
@@ -148,7 +148,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchDownLeft(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-        rcBluetooth.turnRight()
+        rcBluetooth.turnLeft()
     }
     
     
@@ -179,7 +179,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
     
     
-    
     func onCommandCompleted(){
         printLog(newString: "Command Completed")
         self.sendMessage(.string(Constants.COMMAND_FINISHED))
@@ -206,7 +205,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
         // Setup debug log
         commentText = UITextView(frame: CGRect(x: 0, y: 350, width: 520, height: 320))
-      //  commentText.text = "\(bleStatus!)"
         commentText.isEditable = false
         commentText.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         commentText.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
@@ -215,25 +213,23 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         commentText.textContainer.lineBreakMode = .byWordWrapping
         commentText.layer.borderWidth = 0
         commentText.layer.cornerRadius = 18
+      
         view.addSubview(commentText)
         
       
         forwardButton = UIButton(frame: CGRect(x: 320, y: 70, width: 83, height: 60))
         forwardButton.setTitle("Forward", for: .normal)
         forwardButton.setTitleColor(UIColor.white, for: .normal)
-          forwardButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
-       // Rounded button
-        forwardButton.layer.borderWidth = 0
-        forwardButton.layer.cornerRadius = 18
-        forwardButton.tag = 5
-
-      //add target => addTarget(_:actionFor:for:)
-        //forwardButton.addTarget(self, action:#selector(controlPadButtonPressed(_:)), for: .touchUpInside)
-        
-        
-        //add target => addTarget(_:actionFor:for:)
+        forwardButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+      
+      // Rounded button
+      
+      forwardButton.layer.borderWidth = 0
+      
+      forwardButton.layer.cornerRadius = 18
+      
+      forwardButton.tag = 5
   
-
         forwardButton.addTarget(self, action: #selector(onTouchDownForward(_:)), for: .touchDown)
        
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchUpInside)
@@ -310,8 +306,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         }
         else{
             setupPortraitView(CGSize(width: self.view.frame.width, height: self.view.frame.height/2))
-       
-      
       }
         
     }
@@ -389,10 +383,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
                             willDisconnectFrom peripheral: CBPeripheral) {
         }
         
-        func connectionView(_ connectionView: PlaygroundBluetoothConnectionView,
-                            shouldConnectTo peripheral: CBPeripheral,
-                            withAdvertisementData advertisementData: [String: Any]?,
-                            rssi: Double) -> Bool {
+        func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, shouldConnectTo peripheral: CBPeripheral, withAdvertisementData advertisementData: [String: Any]?, rssi: Double) -> Bool {
             return true
         }
     }

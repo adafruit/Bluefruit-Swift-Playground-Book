@@ -16,7 +16,7 @@ public class RCCommand: NSObject {
   
     //:- Variables
   
-    public var duration: Int = 1
+    public var duration: Int = 750
     public var sensorType:String?
     public var commandArray : [String] = []
     let rcBluetooth: RCBluetooth = RCBluetooth()
@@ -24,10 +24,11 @@ public class RCCommand: NSObject {
   
     //:- Motion String Commands
   
+  
     let MOVE_BACKWARD : [Int8] = [ 0x21, 0x42, 0x36, 0x31, 0x35 ] //!B615
     let MOVE_FORWARD : [Int8] = [ 0x21, 0x42, 0x35, 0x31, 0x36 ] //!B516
-    let TURN_RIGHT : [Int8] = [ 0x21, 0x42, 0x38, 0x31, 0x33 ] //!B813
-    let TURN_LEFT : [Int8] = [ 0x21, 0x42, 0x37, 0x31, 0x34 ] //!B714
+    let TURN_RIGHT : [Int8] = [ 0x21, 0x42, 0x37, 0x31, 0x34 ] //!B714
+    let TURN_LEFT : [Int8] = [ 0x21, 0x42, 0x38, 0x31, 0x33 ] //!B813
     let PAUSE : [Int8] = [ 0x21, 0x42, 0x35, 0x30, 0x37 ] //!B507
   
     //:- Functions
@@ -40,8 +41,8 @@ public class RCCommand: NSObject {
     }
   
     public func durationReset(){
-        printLog(newString: "Duration Has Been Reset to 1 Seconds.")
-        duration = 1
+        printLog(newString: "Duration Has Been Reset to 300 milliseconds.")
+        duration = 750
     }
     
     public func sendRobotCommand(_ rcBluetooth: RCBluetooth, _ command: PlaygroundValue){
@@ -52,21 +53,25 @@ public class RCCommand: NSObject {
             switch(text) {
            case CommandType.COMMAND_PAUSE.rawValue:
                 fourBytes = PAUSE
-                duration = 1
+              //  duration = 1
             case CommandType.COMMAND_MOVE_FORWARD.rawValue:
-                 fourBytes = MOVE_FORWARD
+                fourBytes = MOVE_FORWARD
+             //   duration = 800
                 printLog(newString: "Forward Duration: \(duration)")
                 break
             case CommandType.COMMAND_MOVE_BACKWARD.rawValue:
                 fourBytes = MOVE_BACKWARD
+            //    duration = 800
                 printLog(newString: "Backward Duration: \(duration)")
                 break
             case CommandType.COMMAND_TURN_RIGHT.rawValue:
                  fourBytes = TURN_LEFT
+               //  duration = 600
                 printLog(newString: "Right Duration: \(duration)")
                 break
             case CommandType.COMMAND_TURN_LEFT.rawValue:
                 fourBytes = TURN_RIGHT
+             //   duration = 600
                 printLog(newString: "Left Duration: \(duration)")
             default:
                 break

@@ -27,10 +27,10 @@ public func wait() {
     commandManager.pause()
 }
 
-public func wheelie(){
-    commandManager.moveBack()
-    commandManager.moveForward()
-}
+//public func wheelie(){
+//    commandManager.moveBack()
+//    commandManager.moveForward()
+//}
 
 public func dance(){
     commandManager.turnLeft()

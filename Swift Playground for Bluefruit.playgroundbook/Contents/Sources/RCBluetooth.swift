@@ -28,7 +28,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   
   
     var timer = Timer()
-    var duration:Int = 2000
+    var duration: Int = 2000
     var txCharacteristic : CBCharacteristic?
     var rxCharacteristic : CBCharacteristic?
     var characteristicASCIIValue = NSString()
@@ -176,7 +176,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   // Sends our motion commands and duration time to bluetooth device using a write characteristic.
   public func sendRcData(_ data: Data, _ duration: Int){
     blePeripheral!.writeValue(data, for: txCharacteristic!, type: CBCharacteristicWriteType.withResponse)
-    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(duration) ) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(duration) ) {
       self.onDataWritten?()
       self.stopForward()
     }

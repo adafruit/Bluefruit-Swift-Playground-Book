@@ -8,9 +8,6 @@
 import Foundation
 import PlaygroundSupport
 
-
-
-
 public enum CommandType: String {
     
     case COMMAND_MOVE_FORWARD   =  "command_moveForward"
@@ -41,12 +38,9 @@ public class CommandManager: CommandPauseDelegate {
     
     public var isReadyForMoreCommands = true
     public var returnValue = false
-    
     var command: PlaygroundValue = .string("")
     var userInt: Int?
-    
-   
-    
+  
     public init(){
     }
     
@@ -86,8 +80,7 @@ public class CommandManager: CommandPauseDelegate {
         printLog(newString: #function)
     }
     
-    public func exitProgram()
-    {
+    public func exitProgram(){
         command = .string(CommandType.COMMAND_EXIT_PROGRAM.rawValue)
         sendCommand(command)
     }
@@ -95,12 +88,10 @@ public class CommandManager: CommandPauseDelegate {
     public func pause(){
         command = .string(CommandType.COMMAND_PAUSE.rawValue)
         sendCommand(command)
-       
     }
     
     public func testForward(){
         command = .string(CommandType.COMMAND_MOVE_FORWARD.rawValue)
-  
         sendCommand(command)
         printLog(newString: #function)
     }

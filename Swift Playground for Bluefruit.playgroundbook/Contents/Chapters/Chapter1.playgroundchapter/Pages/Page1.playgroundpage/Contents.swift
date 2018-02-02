@@ -11,7 +11,7 @@
  
  */
 //#-code-completion(everything, hide)
-//#-code-completion(identifier, show, moveF`orward(), turnLeft(), moveBack(), turnRight(), wait(), wheelie(), dance())
+//#-code-completion(identifier, show, moveForward(), turnLeft(), moveBack(), turnRight(), wait(), dance())
 //#-hidden-code
 import Foundation
 import PlaygroundSupport
