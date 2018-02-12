@@ -68,12 +68,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func  viewDidLoad() {
         super.viewDidLoad()
+        rcBluetooth.onDataWritten = onCommandCompleted
       
-      
-      rcBluetooth.onDataWritten = onCommandCompleted
         UISetup()
+      
         self.commentText.delegate = self
-        NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
+      
+      NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -87,7 +88,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator){
         super.viewWillTransition(to: size, with: coordinator)
-        print("viewWillTransition:\(size)")
+     //   printLog(newString: "\(size)")
         if(size.width>size.height){
             setupPortraitView(size)
         }
@@ -101,21 +102,18 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         delegate.onSendControllerPadButtonStatus(tag: tag, isPressed: isPressed)
         }
     }
-    
-    
+  
     // MARK: - Actions
     func onTouchDownForward(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
        rcBluetooth.moveForward()
     }
-    
   
     func onTouchUpForward(_ sender: UIButton) {
       let isPressed = false
         sendTouchEvent(sender.tag, isPressed: true)
       rcBluetooth.stopForward()
-    
     }
     
     func onTouchDownBack(_ sender: UIButton) {
@@ -159,28 +157,28 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
     
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
-        printLog(newString: " addCommandToAssessmentArray: Phase #1 - Function is called")
+    //    printLog(newString: " addCommandToAssessmentArray: Phase #1 - Function is called")
         
         if(self.commandsForAssessment.count <= 30){
             self.commandsForAssessment.append(command)
-            printLog(newString: " addCommandToAssessmentArray: Phase #2")
+            //printLog(newString: " addCommandToAssessmentArray: Phase #2")
         }
-        printLog(newString: " addCommandToAssessmentArray: Phase #3")
+     //   printLog(newString: " addCommandToAssessmentArray: Phase #3")
     }
     
     func processCommand(_ command:PlaygroundValue){
-        printLog(newString: #function)
+    //    printLog(newString: #function)
         rcCommand.sendRobotCommand(rcBluetooth, command)
     }
     
     func processCommandForDuration(_ item:PlaygroundValue){
-        printLog(newString: #function)
+   //     printLog(newString: #function)
         rcCommand.sendRobotDuration(item)
     }
     
     
     func onCommandCompleted(){
-        printLog(newString: "Command Completed")
+     //   printLog(newString: "Command Completed")
         self.sendMessage(.string(Constants.COMMAND_FINISHED))
     }
     
@@ -204,11 +202,11 @@ public class RCViewController: UIViewController, UITextViewDelegate {
 
         
         // Setup debug log
-        commentText = UITextView(frame: CGRect(x: 0, y: 350, width: 520, height: 320))
+      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*68/100, width: self.view.frame.width*89/200, height: self.view.frame.height*13/100))
         commentText.isEditable = false
         commentText.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         commentText.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-        commentText.font = UIFont.init(name: "Menlo", size: 15)
+        commentText.font = UIFont.init(name: "Avenir", size: 15)
         commentText.textAlignment = .left
         commentText.textContainer.lineBreakMode = .byWordWrapping
         commentText.layer.borderWidth = 0
@@ -224,12 +222,12 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       
       // Rounded button
       
-      forwardButton.layer.borderWidth = 0
-      
-      forwardButton.layer.cornerRadius = 18
-      
-      forwardButton.tag = 5
+        forwardButton.layer.borderWidth = 0
+        forwardButton.layer.cornerRadius = 18
+        forwardButton.tag = 5
+
   
+
         forwardButton.addTarget(self, action: #selector(onTouchDownForward(_:)), for: .touchDown)
        
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchUpInside)
@@ -251,6 +249,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         backButton.layer.borderWidth = 0
         backButton.layer.cornerRadius = 18
         backButton.tag = 6
+      
+      
         backButton.addTarget(self, action: #selector(onTouchDownBack(_:)), for: .touchDown)
         
         backButton.addTarget(self, action: #selector(onTouchUpBack(_:)), for: .touchUpInside)
@@ -310,9 +310,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
     }
    
-    
+    //- LANDSCAPE ORIENTATION
     func setupLandscapeView(_ size:CGSize){
-        print("setupLandscapeView():\(size)")
         isLandscape = true
     
         NSLayoutConstraint.deactivate(btViewConstraints)
@@ -320,19 +319,44 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 20))
         btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
         NSLayoutConstraint.activate(btViewConstraints)
+      
+      //- Comment Log
+      
+      commentText.frame = CGRect(x: 0, y: 400, width: 512, height: 300)
+      commentText.font = UIFont.init(name: "Avenir Next", size: 17)
+      
+    
+      //Buttons
+     
+      forwardButton.frame = CGRect(x: 320, y: 70, width: 83, height: 60)
+      backButton.frame = CGRect(x: 320, y: 210, width: 83, height: 60)
+      leftButton.frame = CGRect(x: 270, y: 140, width: 83, height: 60)
+      rightButton.frame = CGRect(x: 375, y: 140, width: 83, height: 60)
     }
     
     func setupPortraitView(_ size:CGSize){
-        print("setupPortraitView():\(size)")
-        isLandscape = false
+      isLandscape = false
       
-        NSLayoutConstraint.deactivate(btViewConstraints)
-        btViewConstraints.removeAll()
-        btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 75))
-        btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
-        NSLayoutConstraint.activate(btViewConstraints)
+      NSLayoutConstraint.deactivate(btViewConstraints)
+      btViewConstraints.removeAll()
+      btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 75))
+      btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
+      NSLayoutConstraint.activate(btViewConstraints)
+      
+      //- Comment Log
+      
+      commentText.frame = CGRect(x: 190, y: 300, width: 400, height: 140)
+      commentText.font = UIFont.init(name: "Avenir Next", size: 17)
+      
+      //- Button Transition For Portrait Mode
+      
+       forwardButton.frame = CGRect(x: 570, y: 85, width: 83, height: 60)
+       backButton.frame = CGRect(x: 570, y: 215, width: 83, height: 60)
+       leftButton.frame = CGRect(x: 520, y: 150, width: 83, height: 60)
+       rightButton.frame = CGRect(x: 620, y: 150, width: 83, height: 60)
     }
-    
+  
+  
     func exitProgram(){
         // All commands executed
         let message: PlaygroundValue = .array(commandsForAssessment)
@@ -383,7 +407,10 @@ public class RCViewController: UIViewController, UITextViewDelegate {
                             willDisconnectFrom peripheral: CBPeripheral) {
         }
         
-        func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, shouldConnectTo peripheral: CBPeripheral, withAdvertisementData advertisementData: [String: Any]?, rssi: Double) -> Bool {
+        func connectionView(_ connectionView: PlaygroundBluetoothConnectionView,
+                            shouldConnectTo peripheral: CBPeripheral,
+                            withAdvertisementData advertisementData: [String: Any]?,
+                            rssi: Double) -> Bool {
             return true
         }
     }
@@ -393,7 +420,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
 extension RCViewController: PlaygroundLiveViewMessageHandler {
     
     public func liveViewMessageConnectionOpened(){
-        printLog(newString: "<Live View Message Connection Made>  ")
+  //      printLog(newString: "<Live View Message Connection Made>  ")
         
        }
     
@@ -412,12 +439,12 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
         }
         
         if rcBluetooth.isConnected {
-            printLog(newString: "Bluetooth is Online.")
+          //  printLog(newString: "Bluetooth is Online.")
             addCommandToAssessmentArray(message)
            processCommand(message)
-            printLog(newString: "\(message)")
-            printLog(newString: "Array count \(commandsForAssessment.count)")
-            printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+        //    printLog(newString: "\(message)")
+          //  printLog(newString: "Array count \(commandsForAssessment.count)")
+           // printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
     }
             
             else{ // Connection not ready
@@ -457,8 +484,8 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
             printLog(newString: "Integer Sent: \(message)")
             addCommandToAssessmentArray(message)
             processCommandForDuration(message)
-            printLog(newString: "Array count \(commandsForAssessment.count)")
-            printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+        //    printLog(newString: "Array count \(commandsForAssessment.count)")
+          //  printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
             
         }  else{ // Connection not ready
             printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
@@ -470,7 +497,7 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
 }
     
     public func sendMessage(_ message: PlaygroundValue) {
-        printLog(newString: "<Send message to Contants.swift>")
+   //     printLog(newString: "<Send message to Contants.swift>")
        rcCommand.durationReset()
         send(message)
     }

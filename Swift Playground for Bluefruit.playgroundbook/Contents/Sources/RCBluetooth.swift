@@ -224,7 +224,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     }
     
     public func stopForward(){
-      printLog(newString: "<Forward Stopped>")
+  //    printLog(newString: "<Forward Stopped>")
       writeValue22(data: stopString)
     }
     
@@ -234,7 +234,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   }
 
     public func stopBack(){
-      printLog(newString: "<Back Stopped>")
+ //     printLog(newString: "<Back Stopped>")
       writeValue22(data: backStopString)
     }
 
@@ -244,7 +244,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     }
 
     public func stopRight(){
-      printLog(newString: "<Right Stopped>")
+  //    printLog(newString: "<Right Stopped>")
       writeValue22(data: rightStop)
     }
 
@@ -254,7 +254,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     }
 
     public func stopLeft(){
-      printLog(newString: "<Left Stopped>")
+    //  printLog(newString: "<Left Stopped>")
       writeValue22(data: leftStop)
     }
 

@@ -13,7 +13,7 @@
 	<key>Name</key>
 	<string>Empty</string>
 	<key>ContentIdentifier</key>
-	<string>com.razeware.empty</string>
+	<string>com.example.adafruitswiftplayground</string>
 	<key>DeploymentTarget</key>
 	<string>ios10.0</string>
 	<key>DevelopmentRegion</key>
