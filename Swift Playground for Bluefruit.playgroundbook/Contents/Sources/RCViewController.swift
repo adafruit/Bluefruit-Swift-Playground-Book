@@ -153,7 +153,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func onTouchUpLeft(_ sender: UIButton) {
         let isPressed = false
         rcBluetooth.stopLeft()
-
     }
     
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
@@ -322,7 +321,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       
       //- Comment Log
       
-      commentText.frame = CGRect(x: 0, y: 400, width: 512, height: 300)
+      commentText.frame = CGRect(x: 12, y: 390, width: 490, height: 300)
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
     
