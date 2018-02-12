@@ -319,13 +319,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
         NSLayoutConstraint.activate(btViewConstraints)
       
-      //- Comment Log
+      //- Comment Log mark
       
       commentText.frame = CGRect(x: 12, y: 390, width: 490, height: 300)
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
     
-      //Buttons
+      //-Button Frame Update For Landscape Mode
      
       forwardButton.frame = CGRect(x: 320, y: 70, width: 83, height: 60)
       backButton.frame = CGRect(x: 320, y: 210, width: 83, height: 60)
@@ -347,7 +347,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       commentText.frame = CGRect(x: 190, y: 300, width: 400, height: 140)
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
-      //- Button Transition For Portrait Mode
+      //- Button Frame Update For Portrait Mode
       
        forwardButton.frame = CGRect(x: 570, y: 85, width: 83, height: 60)
        backButton.frame = CGRect(x: 570, y: 215, width: 83, height: 60)
@@ -377,7 +377,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         // MARK: PlaygroundBluetoothConnectionView Delegate
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, shouldDisplayDiscovered peripheral: CBPeripheral, withAdvertisementData advertisementData: [String : Any]?, rssi: Double) -> Bool {
             // Filter out peripheral items (optional)
-            
             return true
         }
 
