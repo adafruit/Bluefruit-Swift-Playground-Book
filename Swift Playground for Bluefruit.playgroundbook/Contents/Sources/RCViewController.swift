@@ -68,9 +68,12 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func  viewDidLoad() {
         super.viewDidLoad()
-        rcBluetooth.onDataWritten = onCommandCompleted
       
-        UISetup()
+      rcBluetooth.onDataWritten = onCommandCompleted
+      
+    
+      
+      UISetup()
       
         self.commentText.delegate = self
       
@@ -104,10 +107,17 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
   
     // MARK: - Actions
-    func onTouchDownForward(_ sender: UIButton) {
+  
+  func scrollToBottom() {
+    let stringLength:Int = self.commentText.text.count
+    self.commentText.scrollRangeToVisible(NSMakeRange(stringLength-1, 0))
+  }
+  
+  func onTouchDownForward(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
        rcBluetooth.moveForward()
+    scrollToBottom()
     }
   
     func onTouchUpForward(_ sender: UIButton) {
@@ -120,6 +130,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
       rcBluetooth.moveBack()
+      scrollToBottom()
     }
     
     
@@ -127,6 +138,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       sendTouchEvent(sender.tag, isPressed: true)
       let isPressed = false
         rcBluetooth.stopBack()
+    //scrollToBottom()
     }
     
     
@@ -134,12 +146,14 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
         rcBluetooth.turnRight()
+      scrollToBottom()
     }
     
     
     func onTouchUpRight(_ sender: UIButton) {
         let isPressed = false
         rcBluetooth.stopRight()
+     //   scrollToBottom()
     }
 
     
@@ -147,12 +161,14 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
         rcBluetooth.turnLeft()
+      scrollToBottom()
     }
     
     
     func onTouchUpLeft(_ sender: UIButton) {
         let isPressed = false
         rcBluetooth.stopLeft()
+   //   scrollToBottom()
     }
     
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
@@ -198,8 +214,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()
         }
         self.view.addSubview(bleView)
+      
 
-        
         // Setup debug log
       commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*68/100, width: self.view.frame.width*89/200, height: self.view.frame.height*13/100))
         commentText.isEditable = false
@@ -320,13 +336,14 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         NSLayoutConstraint.activate(btViewConstraints)
       
       //- Comment Log mark
+      scrollToBottom()
       
       commentText.frame = CGRect(x: 12, y: 390, width: 490, height: 300)
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
-    
+  //  scrollToBottom()
       //-Button Frame Update For Landscape Mode
-     
+
       forwardButton.frame = CGRect(x: 320, y: 70, width: 83, height: 60)
       backButton.frame = CGRect(x: 320, y: 210, width: 83, height: 60)
       leftButton.frame = CGRect(x: 270, y: 140, width: 83, height: 60)
@@ -342,11 +359,15 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
       NSLayoutConstraint.activate(btViewConstraints)
       
+      
+      scrollToBottom()
       //- Comment Log
       
       commentText.frame = CGRect(x: 190, y: 300, width: 400, height: 140)
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
+      
+    //  scrollToBottom()
       //- Button Frame Update For Portrait Mode
       
        forwardButton.frame = CGRect(x: 570, y: 85, width: 83, height: 60)
@@ -440,9 +461,7 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
           //  printLog(newString: "Bluetooth is Online.")
             addCommandToAssessmentArray(message)
            processCommand(message)
-        //    printLog(newString: "\(message)")
-          //  printLog(newString: "Array count \(commandsForAssessment.count)")
-           // printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+       
     }
             
             else{ // Connection not ready
