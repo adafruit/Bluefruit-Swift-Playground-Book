@@ -70,12 +70,9 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
       
       rcBluetooth.onDataWritten = onCommandCompleted
-      
-    
-      
       UISetup()
       
-        self.commentText.delegate = self
+      self.commentText.delegate = self
       
       NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
     }
@@ -108,7 +105,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
   
     // MARK: - Actions
   
-  func scrollToBottom() {
+  public func scrollToBottom() {
     let stringLength:Int = self.commentText.text.count
     self.commentText.scrollRangeToVisible(NSMakeRange(stringLength-1, 0))
   }
@@ -217,8 +214,10 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       
 
         // Setup debug log
-      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*68/100, width: self.view.frame.width*89/200, height: self.view.frame.height*13/100))
-        commentText.isEditable = false
+      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*55/100, width: self.view.frame.width*89/200, height: self.view.frame.height*30/100))
+      
+      
+      commentText.isEditable = false
         commentText.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         commentText.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
         commentText.font = UIFont.init(name: "Avenir", size: 15)
@@ -252,7 +251,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchCancel)
         
         
-       view.addSubview(forwardButton)
+        view.addSubview(forwardButton)
 
 
         backButton = UIButton(frame: CGRect(x: 320, y: 210, width: 83, height: 60))
@@ -338,7 +337,9 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       //- Comment Log mark
       scrollToBottom()
       
-      commentText.frame = CGRect(x: 12, y: 390, width: 490, height: 300)
+      commentText.frame = CGRect(x: size.width*5/100, y: size.height*60/100, width: size.width*89/100, height: size.height*30/100)
+     
+      
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
   //  scrollToBottom()
@@ -363,7 +364,10 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       scrollToBottom()
       //- Comment Log
       
-      commentText.frame = CGRect(x: 190, y: 300, width: 400, height: 140)
+       commentText.frame = CGRect(x: size.width*32/100, y: size.height*60/100,width: size.width*37/100, height: size.height*27/100)
+     
+      
+      
       commentText.font = UIFont.init(name: "Avenir Next", size: 17)
       
       

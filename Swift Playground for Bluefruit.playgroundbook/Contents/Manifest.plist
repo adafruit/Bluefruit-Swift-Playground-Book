@@ -11,9 +11,9 @@
 	<key>ContentVersion</key>
 	<string>1.0</string>
 	<key>Name</key>
-	<string>Empty</string>
+	<string>Adafruit&apos;s Playgroundbook</string>
 	<key>ContentIdentifier</key>
-	<string>com.example.adafruitswiftplayground</string>
+	<string>com.adafruit.swiftplaygrounds.bluefruit</string>
 	<key>DeploymentTarget</key>
 	<string>ios10.0</string>
 	<key>DevelopmentRegion</key>
