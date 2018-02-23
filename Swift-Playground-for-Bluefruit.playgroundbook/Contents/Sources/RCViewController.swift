@@ -36,7 +36,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
 
     
     //Button Setup
-    public var commentText:UITextView!
+    public let commentText = UITextView(frame: CGRect.zero)
+  
     var forwardButton : UIButton!
     var backButton: UIButton!
     var leftButton: UIButton!
@@ -214,8 +215,9 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       
 
         // Setup debug log
-      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*55/100, width: self.view.frame.width*89/200, height: self.view.frame.height*30/100))
+//      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*55/100, width: self.view.frame.width*89/200, height: self.view.frame.height*30/100))
       
+      commentText.translatesAutoresizingMaskIntoConstraints = false
       
       commentText.isEditable = false
         commentText.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
@@ -227,7 +229,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         commentText.layer.cornerRadius = 18
       
         view.addSubview(commentText)
-        
+      
+      
+        view.addConstraints(generateConstraintsForCommentText())
+
+      
+      
+      
       
         forwardButton = UIButton(frame: CGRect(x: 320, y: 70, width: 83, height: 60))
         forwardButton.setTitle("Forward", for: .normal)
@@ -323,7 +331,48 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       }
         
     }
-   
+  
+  
+  
+  private func generateConstraintsForCommentText() -> [NSLayoutConstraint] {
+    
+  let constraintBottom = NSLayoutConstraint(item: self.commentText, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: -70.0)
+    
+  let constraintLeading = NSLayoutConstraint(item: self.commentText, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: 20.0)
+  
+  let constraintTrailing = NSLayoutConstraint(item: self.commentText, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1.0, constant: -20.0)
+  
+  let constraintHeight = NSLayoutConstraint(item: self.commentText, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 142.0)
+    
+  return [constraintBottom, constraintLeading, constraintTrailing, constraintHeight]
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
     //- LANDSCAPE ORIENTATION
     func setupLandscapeView(_ size:CGSize){
         isLandscape = true
@@ -364,7 +413,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
       scrollToBottom()
       //- Comment Log
       
-       commentText.frame = CGRect(x: size.width*32/100, y: size.height*60/100,width: size.width*37/100, height: size.height*27/100)
+     //  commentText.frame = CGRect(x: size.width*32/100, y: size.height*60/100,width: size.width*37/100, height: size.height*27/100)
      
       
       

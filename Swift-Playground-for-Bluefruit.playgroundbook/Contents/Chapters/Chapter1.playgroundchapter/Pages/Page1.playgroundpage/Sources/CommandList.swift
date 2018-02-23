@@ -27,6 +27,10 @@ public func wait() {
     commandManager.pause()
 }
 
+public func exitProgram() {
+  commandManager.exitProgram()
+}
+
 //public func wheelie(){
 //    commandManager.moveBack()
 //    commandManager.moveForward()

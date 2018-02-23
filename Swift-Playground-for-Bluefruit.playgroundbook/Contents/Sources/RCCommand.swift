@@ -88,29 +88,52 @@ public class RCCommand: NSObject {
             break
         }
     }
+  
     
-    func delay(_ delay:Double, closure:@escaping ()->()) {
-        DispatchQueue.main.asyncAfter(
-            deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
-    }
-    
-    public static func solutionChecker(_ commands:[PlaygroundValue], _ correctSolution:[CommandType])->Bool{ // Don't pass in robot connect command into this
+    public static func solutionChecker(_ commands:[PlaygroundValue], _ correctSolution:[CommandType])->Bool{
+      printLog(newString: #function)
+      printLog(newString: "Array Count: \(commands.count)")
         var result:Bool = false
-        if commands.count == correctSolution.count{
-            for index in 0...(commands.count-1) {
-                let command:PlaygroundValue = commands[index]
-                if case let .string(text) = command {
-                    if !text.isEqual(correctSolution[index].rawValue){
-                        break
+      
+         if commands.count == correctSolution.count{
+          
+          for index in 0...(commands.count-1) {
+          
+            let command:PlaygroundValue = commands[index]
+            
+            if case let .string(text) = command {
+            
+              if !text.isEqual(correctSolution[index].rawValue){
+              
+                break
                     }
                 }
-                if index==(commands.count-1){
-                    result = true
+           
+            if index==(commands.count-1){
+            
+              result = true
                 }
             }
         }
         return result
     }
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 }
 

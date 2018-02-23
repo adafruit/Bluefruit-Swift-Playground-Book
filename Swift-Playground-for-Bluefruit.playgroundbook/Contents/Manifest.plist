@@ -2,25 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SwiftVersion</key>
-	<string>3.0</string>
-	<key>ImageReference</key>
-	<string>icon.png</string>
-	<key>Version</key>
-	<string>3.0</string>
-	<key>ContentVersion</key>
-	<string>1.0</string>
-	<key>Name</key>
-	<string>Adafruit&apos;s Playgroundbook</string>
-	<key>ContentIdentifier</key>
-	<string>com.adafruit.swiftplaygrounds.bluefruit</string>
-	<key>DeploymentTarget</key>
-	<string>ios10.0</string>
-	<key>DevelopmentRegion</key>
-	<string>en</string>
 	<key>Chapters</key>
 	<array>
 		<string>Chapter1.playgroundchapter</string>
 	</array>
+	<key>ContentVersion</key>
+	<string>1.0</string>
+	<key>ContentIdentifier</key>
+	<string>com.adafruit.swiftplaygrounds.bluefruit</string>
+	<key>SwiftVersion</key>
+	<string>3.0</string>
+	<key>ImageReference</key>
+	<string>myminiracecar-icon-400x300.png</string>
+	<key>Version</key>
+	<string>3.0</string>
+	<key>Name</key>
+	<string>MyMiniRaceCar</string>
+	<key>DeploymentTarget</key>
+	<string>ios10.0</string>
+	<key>DevelopmentRegion</key>
+	<string>en</string>
 </dict>
 </plist>

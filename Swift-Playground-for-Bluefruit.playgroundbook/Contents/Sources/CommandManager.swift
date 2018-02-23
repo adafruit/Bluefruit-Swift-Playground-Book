@@ -43,9 +43,12 @@ public class CommandManager: CommandPauseDelegate {
   
     public init(){
     }
-    
+  
+  
+  
     public func sendCommand(_ commandData:PlaygroundValue) {
-        let page = PlaygroundPage.current
+      printLog(newString: "SendCommand")
+      let page = PlaygroundPage.current
         if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
             proxy.send(commandData)
         }
@@ -59,25 +62,24 @@ public class CommandManager: CommandPauseDelegate {
     public func moveForward(){
         command = .string(CommandType.COMMAND_MOVE_FORWARD.rawValue)
         sendCommand(command)
-        printLog(newString: #function)
+      
     }
     
     public func moveBack(){
         command = .string(CommandType.COMMAND_MOVE_BACKWARD.rawValue)
         sendCommand(command)
-        printLog(newString: #function)
+      
     }
     
     public func turnRight(){
         command = .string(CommandType.COMMAND_TURN_RIGHT.rawValue)
         sendCommand(command)
-        printLog(newString: #function)
+      
     }
     
     public func turnLeft(){
         command = .string(CommandType.COMMAND_TURN_LEFT.rawValue)
         sendCommand(command)
-        printLog(newString: #function)
     }
     
     public func exitProgram(){
@@ -93,7 +95,6 @@ public class CommandManager: CommandPauseDelegate {
     public func testForward(){
         command = .string(CommandType.COMMAND_MOVE_FORWARD.rawValue)
         sendCommand(command)
-        printLog(newString: #function)
     }
  
     public func intTaker(){
