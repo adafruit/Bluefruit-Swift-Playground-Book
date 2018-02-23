@@ -22,7 +22,7 @@ var sendCommand : String?
 public class RCViewController: UIViewController, UITextViewDelegate {
     //Data
     //Page ID
-    var page:Int = 1
+    var page: Int = 1
     //Data
     var bleView: PlaygroundBluetoothConnectionView!
     let bleViewDelegate = ConnectionViewDelegate()
