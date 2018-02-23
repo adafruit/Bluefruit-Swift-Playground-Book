@@ -11,7 +11,6 @@
 setup()
 //#-end-hidden-code
 //#-editable-code
-moveForward()
 //#-end-editable-code
 //#-hidden-code
 exitProgram()

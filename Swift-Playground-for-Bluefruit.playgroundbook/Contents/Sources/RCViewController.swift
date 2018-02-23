@@ -348,31 +348,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
   }
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
     //- LANDSCAPE ORIENTATION
     func setupLandscapeView(_ size:CGSize){
         isLandscape = true
