@@ -33,11 +33,11 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     var rcCommand: RCCommand = RCCommand()
     var commandsForAssessment:[PlaygroundValue] = [PlaygroundValue]()
     private let buttonPrefix = "!B"
-
+    
     
     //Button Setup
     public let commentText = UITextView(frame: CGRect.zero)
-  
+    
     var forwardButton : UIButton!
     var backButton: UIButton!
     var leftButton: UIButton!
@@ -61,7 +61,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-
+    
     public convenience init(_ page:Int = 1) {
         self.init(nibName: nil, bundle: nil)
         self.page = page
@@ -69,15 +69,15 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func  viewDidLoad() {
         super.viewDidLoad()
-      
-      rcBluetooth.onDataWritten = onCommandCompleted
-      UISetup()
-      
-      self.commentText.delegate = self
-      
-      NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
+        
+        rcBluetooth.onDataWritten = onCommandCompleted
+        UISetup()
+        
+        self.commentText.delegate = self
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
     }
-
+    
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
@@ -89,7 +89,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator){
         super.viewWillTransition(to: size, with: coordinator)
-     //   printLog(newString: "\(size)")
+        //   printLog(newString: "\(size)")
         if(size.width>size.height){
             setupPortraitView(size)
         }
@@ -97,46 +97,46 @@ public class RCViewController: UIViewController, UITextViewDelegate {
             setupLandscapeView(size)
         }
     }
-
+    
     fileprivate func sendTouchEvent(_ tag: Int, isPressed: Bool) {
         if let delegate = delegate {
-        delegate.onSendControllerPadButtonStatus(tag: tag, isPressed: isPressed)
+            delegate.onSendControllerPadButtonStatus(tag: tag, isPressed: isPressed)
         }
     }
-  
+    
     // MARK: - Actions
-  
-  public func scrollToBottom() {
-    let stringLength:Int = self.commentText.text.count
-    self.commentText.scrollRangeToVisible(NSMakeRange(stringLength-1, 0))
-  }
-  
-  func onTouchDownForward(_ sender: UIButton) {
+    
+    public func scrollToBottom() {
+        let stringLength:Int = self.commentText.text.count
+        self.commentText.scrollRangeToVisible(NSMakeRange(stringLength-1, 0))
+    }
+    
+    func onTouchDownForward(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-       rcBluetooth.moveForward()
-    scrollToBottom()
+        rcBluetooth.moveForward()
+        scrollToBottom()
     }
-  
+    
     func onTouchUpForward(_ sender: UIButton) {
-      let isPressed = false
+        let isPressed = false
         sendTouchEvent(sender.tag, isPressed: true)
-      rcBluetooth.stopForward()
+        rcBluetooth.stopForward()
     }
     
     func onTouchDownBack(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
-      rcBluetooth.moveBack()
-      scrollToBottom()
+        rcBluetooth.moveBack()
+        scrollToBottom()
     }
     
     
     func onTouchUpBack(_ sender: UIButton) {
-      sendTouchEvent(sender.tag, isPressed: true)
-      let isPressed = false
+        sendTouchEvent(sender.tag, isPressed: true)
+        let isPressed = false
         rcBluetooth.stopBack()
-    //scrollToBottom()
+        //scrollToBottom()
     }
     
     
@@ -144,63 +144,63 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
         rcBluetooth.turnRight()
-      scrollToBottom()
+        scrollToBottom()
     }
     
     
     func onTouchUpRight(_ sender: UIButton) {
         let isPressed = false
         rcBluetooth.stopRight()
-     //   scrollToBottom()
+        //   scrollToBottom()
     }
-
+    
     
     func onTouchDownLeft(_ sender: UIButton) {
         sendTouchEvent(sender.tag, isPressed: true)
         let isPressed = true
         rcBluetooth.turnLeft()
-      scrollToBottom()
+        scrollToBottom()
     }
     
     
     func onTouchUpLeft(_ sender: UIButton) {
         let isPressed = false
         rcBluetooth.stopLeft()
-   //   scrollToBottom()
+        //   scrollToBottom()
     }
     
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
-    //    printLog(newString: " addCommandToAssessmentArray: Phase #1 - Function is called")
+        //    printLog(newString: " addCommandToAssessmentArray: Phase #1 - Function is called")
         
         if(self.commandsForAssessment.count <= 30){
             self.commandsForAssessment.append(command)
             //printLog(newString: " addCommandToAssessmentArray: Phase #2")
         }
-     //   printLog(newString: " addCommandToAssessmentArray: Phase #3")
+        //   printLog(newString: " addCommandToAssessmentArray: Phase #3")
     }
     
     func processCommand(_ command:PlaygroundValue){
-    //    printLog(newString: #function)
+        //    printLog(newString: #function)
         rcCommand.sendRobotCommand(rcBluetooth, command)
     }
     
     func processCommandForDuration(_ item:PlaygroundValue){
-   //     printLog(newString: #function)
+        //     printLog(newString: #function)
         rcCommand.sendRobotDuration(item)
     }
     
     
     func onCommandCompleted(){
-     //   printLog(newString: "Command Completed")
+        //   printLog(newString: "Command Completed")
         self.sendMessage(.string(Constants.COMMAND_FINISHED))
     }
     
     func onCommandCompleted2(){
-      commentText.text = "Test"
+        commentText.text = "Test"
     }
     
     func UISetup() {
-    
+        
         
         isLandscape = (self.view.frame.width > self.view.frame.height)
         
@@ -209,17 +209,17 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         bleView.delegate = bleViewDelegate
         bleView.dataSource = bleViewDelegate
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) {
-        self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()
+            self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()
         }
         self.view.addSubview(bleView)
-      
-
+        
+        
         // Setup debug log
-//      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*55/100, width: self.view.frame.width*89/200, height: self.view.frame.height*30/100))
-      
-      commentText.translatesAutoresizingMaskIntoConstraints = false
-      
-      commentText.isEditable = false
+        //      commentText = UITextView(frame: CGRect(x: self.view.frame.width*5/100, y: self.view.frame.height*55/100, width: self.view.frame.width*89/200, height: self.view.frame.height*30/100))
+        
+        commentText.translatesAutoresizingMaskIntoConstraints = false
+        
+        commentText.isEditable = false
         commentText.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         commentText.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
         commentText.font = UIFont.init(name: "Avenir", size: 15)
@@ -227,31 +227,31 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         commentText.textContainer.lineBreakMode = .byWordWrapping
         commentText.layer.borderWidth = 0
         commentText.layer.cornerRadius = 18
-      
+        
         view.addSubview(commentText)
-      
-      
+        
+        
         view.addConstraints(generateConstraintsForCommentText())
-
-      
-      
-      
-      
+        
+        
+        
+        
+        
         forwardButton = UIButton(frame: CGRect(x: 320, y: 70, width: 83, height: 60))
         forwardButton.setTitle("Forward", for: .normal)
         forwardButton.setTitleColor(UIColor.white, for: .normal)
         forwardButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
-      
-      // Rounded button
-      
+        
+        // Rounded button
+        
         forwardButton.layer.borderWidth = 0
         forwardButton.layer.cornerRadius = 18
         forwardButton.tag = 5
-
-  
-
+        
+        
+        
         forwardButton.addTarget(self, action: #selector(onTouchDownForward(_:)), for: .touchDown)
-       
+        
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchUpInside)
         
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchDragExit)
@@ -260,19 +260,19 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
         
         view.addSubview(forwardButton)
-
-
+        
+        
         backButton = UIButton(frame: CGRect(x: 320, y: 210, width: 83, height: 60))
         backButton.setTitle("Back", for: .normal)
         backButton.setTitleColor(UIColor.white, for: .normal)
         backButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
-
+        
         //   Rounded button
         backButton.layer.borderWidth = 0
         backButton.layer.cornerRadius = 18
         backButton.tag = 6
-      
-      
+        
+        
         backButton.addTarget(self, action: #selector(onTouchDownBack(_:)), for: .touchDown)
         
         backButton.addTarget(self, action: #selector(onTouchUpBack(_:)), for: .touchUpInside)
@@ -281,9 +281,9 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
         backButton.addTarget(self, action: #selector(onTouchUpBack(_:)), for: .touchCancel)
         view.addSubview(backButton)
-//
-//
-
+        //
+        //
+        
         leftButton = UIButton(frame: CGRect(x: 270, y: 140, width: 83, height: 60))
         leftButton.setTitle("Left", for: .normal)
         leftButton.setTitleColor(UIColor.white, for: .normal)
@@ -300,7 +300,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
         leftButton.addTarget(self, action: #selector(onTouchUpLeft(_:)), for: .touchCancel)
         view.addSubview(leftButton)
-
+        
         
         
         rightButton = UIButton(frame: CGRect(x: 375, y: 140, width: 83, height: 60))
@@ -318,93 +318,93 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         rightButton.addTarget(self, action: #selector(onTouchUpRight(_:)), for: .touchDragExit)
         
         rightButton.addTarget(self, action: #selector(onTouchUpRight(_:)), for: .touchCancel)
-
+        
         
         view.addSubview(rightButton)
-
-       
+        
+        
         if(isLandscape){
             setupLandscapeView(CGSize(width: self.view.frame.width/2, height: self.view.frame.height))
         }
         else{
             setupPortraitView(CGSize(width: self.view.frame.width, height: self.view.frame.height/2))
-      }
+        }
         
     }
-  
-  
-  
-  private func generateConstraintsForCommentText() -> [NSLayoutConstraint] {
     
-  let constraintBottom = NSLayoutConstraint(item: self.commentText, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: -70.0)
     
-  let constraintLeading = NSLayoutConstraint(item: self.commentText, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: 20.0)
-  
-  let constraintTrailing = NSLayoutConstraint(item: self.commentText, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1.0, constant: -20.0)
-  
-  let constraintHeight = NSLayoutConstraint(item: self.commentText, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 142.0)
     
-  return [constraintBottom, constraintLeading, constraintTrailing, constraintHeight]
+    private func generateConstraintsForCommentText() -> [NSLayoutConstraint] {
+        
+        let constraintBottom = NSLayoutConstraint(item: self.commentText, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: -70.0)
+        
+        let constraintLeading = NSLayoutConstraint(item: self.commentText, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: 20.0)
+        
+        let constraintTrailing = NSLayoutConstraint(item: self.commentText, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1.0, constant: -20.0)
+        
+        let constraintHeight = NSLayoutConstraint(item: self.commentText, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 142.0)
+        
+        return [constraintBottom, constraintLeading, constraintTrailing, constraintHeight]
+        
+    }
     
-  }
-  
     //- LANDSCAPE ORIENTATION
     func setupLandscapeView(_ size:CGSize){
         isLandscape = true
-    
+        
         NSLayoutConstraint.deactivate(btViewConstraints)
         btViewConstraints.removeAll()
         btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 20))
         btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
         NSLayoutConstraint.activate(btViewConstraints)
-      
-      //- Comment Log mark
-      scrollToBottom()
-      
-      commentText.frame = CGRect(x: size.width*5/100, y: size.height*60/100, width: size.width*89/100, height: size.height*30/100)
-     
-      
-      commentText.font = UIFont.init(name: "Avenir Next", size: 17)
-      
-  //  scrollToBottom()
-      //-Button Frame Update For Landscape Mode
-
-      forwardButton.frame = CGRect(x: 320, y: 70, width: 83, height: 60)
-      backButton.frame = CGRect(x: 320, y: 210, width: 83, height: 60)
-      leftButton.frame = CGRect(x: 270, y: 140, width: 83, height: 60)
-      rightButton.frame = CGRect(x: 375, y: 140, width: 83, height: 60)
+        
+        //- Comment Log mark
+        scrollToBottom()
+        
+        commentText.frame = CGRect(x: size.width*5/100, y: size.height*60/100, width: size.width*89/100, height: size.height*30/100)
+        
+        
+        commentText.font = UIFont.init(name: "Avenir Next", size: 17)
+        
+        //  scrollToBottom()
+        //-Button Frame Update For Landscape Mode
+        
+        forwardButton.frame = CGRect(x: 320, y: 70, width: 83, height: 60)
+        backButton.frame = CGRect(x: 320, y: 210, width: 83, height: 60)
+        leftButton.frame = CGRect(x: 270, y: 140, width: 83, height: 60)
+        rightButton.frame = CGRect(x: 375, y: 140, width: 83, height: 60)
     }
     
     func setupPortraitView(_ size:CGSize){
-      isLandscape = false
-      
-      NSLayoutConstraint.deactivate(btViewConstraints)
-      btViewConstraints.removeAll()
-      btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 75))
-      btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
-      NSLayoutConstraint.activate(btViewConstraints)
-      
-      
-      scrollToBottom()
-      //- Comment Log
-      
-     //  commentText.frame = CGRect(x: size.width*32/100, y: size.height*60/100,width: size.width*37/100, height: size.height*27/100)
-     
-      
-      
-      commentText.font = UIFont.init(name: "Avenir Next", size: 17)
-      
-      
-    //  scrollToBottom()
-      //- Button Frame Update For Portrait Mode
-      
-       forwardButton.frame = CGRect(x: 570, y: 85, width: 83, height: 60)
-       backButton.frame = CGRect(x: 570, y: 215, width: 83, height: 60)
-       leftButton.frame = CGRect(x: 520, y: 150, width: 83, height: 60)
-       rightButton.frame = CGRect(x: 620, y: 150, width: 83, height: 60)
+        isLandscape = false
+        
+        NSLayoutConstraint.deactivate(btViewConstraints)
+        btViewConstraints.removeAll()
+        btViewConstraints.append(bleView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 75))
+        btViewConstraints.append(bleView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20))
+        NSLayoutConstraint.activate(btViewConstraints)
+        
+        
+        scrollToBottom()
+        //- Comment Log
+        
+        //  commentText.frame = CGRect(x: size.width*32/100, y: size.height*60/100,width: size.width*37/100, height: size.height*27/100)
+        
+        
+        
+        commentText.font = UIFont.init(name: "Avenir Next", size: 17)
+        
+        
+        //  scrollToBottom()
+        //- Button Frame Update For Portrait Mode
+        
+        forwardButton.frame = CGRect(x: 570, y: 85, width: 83, height: 60)
+        backButton.frame = CGRect(x: 570, y: 215, width: 83, height: 60)
+        leftButton.frame = CGRect(x: 520, y: 150, width: 83, height: 60)
+        rightButton.frame = CGRect(x: 620, y: 150, width: 83, height: 60)
     }
-  
-  
+    
+    
     func exitProgram(){
         // All commands executed
         let message: PlaygroundValue = .array(commandsForAssessment)
@@ -413,7 +413,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
     
     class ConnectionViewDelegate: PlaygroundBluetoothConnectionViewDelegate, PlaygroundBluetoothConnectionViewDataSource {
-       
+        
         //PlaygroundBluetoothConnectionViewDataSource
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, itemForPeripheral peripheral: CBPeripheral, withAdvertisementData advertisementData: [String : Any]?) -> PlaygroundBluetoothConnectionView.Item {
             // Displays UI elements for connectivity
@@ -422,13 +422,13 @@ public class RCViewController: UIViewController, UITextViewDelegate {
             let issueIcon = icon
             return PlaygroundBluetoothConnectionView.Item(name: name, icon: icon, issueIcon: issueIcon, firmwareStatus: nil, batteryLevel: nil)
         }
-
+        
         // MARK: PlaygroundBluetoothConnectionView Delegate
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, shouldDisplayDiscovered peripheral: CBPeripheral, withAdvertisementData advertisementData: [String : Any]?, rssi: Double) -> Bool {
             // Filter out peripheral items (optional)
             return true
         }
-
+        
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, titleFor state: PlaygroundBluetoothConnectionView.State) -> String {
             // Provide a localized title for the given state of the connection view.
             switch state {
@@ -444,12 +444,12 @@ public class RCViewController: UIViewController, UITextViewDelegate {
                 return NSLocalizedString("Connect to a Different RC", comment: "")
             }
         }
-
+        
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, firmwareUpdateInstructionsFor peripheral: CBPeripheral) -> String {
             // Provide firmware update instructions.
             return "Firmware update instructions here."
         }
-   
+        
         func connectionView(_ connectionView: PlaygroundBluetoothConnectionView,
                             willDisconnectFrom peripheral: CBPeripheral) {
         }
@@ -467,9 +467,9 @@ public class RCViewController: UIViewController, UITextViewDelegate {
 extension RCViewController: PlaygroundLiveViewMessageHandler {
     
     public func liveViewMessageConnectionOpened(){
-  //      printLog(newString: "<Live View Message Connection Made>  ")
+        //      printLog(newString: "<Live View Message Connection Made>  ")
         
-       }
+    }
     
     public func liveViewMessageConnectionClosed() {
         commandsForAssessment.removeAll()
@@ -478,74 +478,78 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
     
     //Recieve message from Constant.swift
     public func receive(_ message: PlaygroundValue) {
-       printLog(newString: #function)
-    
-    if case let .string(command) = message {
-        if command.isEqual(CommandType.COMMAND_EXIT_PROGRAM.rawValue){
-            exitProgram()
-        }
+        printLog(newString: #function)
         
-        if rcBluetooth.isConnected {
-          //  printLog(newString: "Bluetooth is Online.")
-            addCommandToAssessmentArray(message)
-           processCommand(message)
-       
-    }
+        //If it's a string …
+        if case let .string(command) = message {
+            if command.isEqual(CommandType.COMMAND_EXIT_PROGRAM.rawValue){
+                exitProgram()
+            }
             
+            if rcBluetooth.isConnected {
+                //  printLog(newString: "Bluetooth is Online.")
+                addCommandToAssessmentArray(message)
+                processCommand(message)
+                
+            }
+                
             else{ // Connection not ready
                 printLog(newString: "Connect To RC Before Sending Commands.")
             }
         }
-    
-   else if case let .dictionary(dict) = message { // Connect to robot
+        
+        //If it's a dictionary …
+        else if case let .dictionary(dict) = message { // Connect to robot
             printLog(newString: "Send message; Command String attempt made")
             processCommand(message)
             addCommandToAssessmentArray(message)
         }
         
+        //If it's a boolean …
         else if case let .boolean(result) = message { // Program Results
-          //  programStateImage.stopAnimating()
+            //  programStateImage.stopAnimating()
             //isShowingResult = true
-//            if result{
-//                myPrint("Receive result from Constants.swift: feedback_success")
-//                setCommandAnimationAsync(CommandType.FEEDBACK_SUCCESS)
-//                if robotConnection.isConnected {
-//                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_AWESOME.rawValue))
-//                }
-//            }
-//            else{
-//                myPrint("Receive result from Constants.swift: feedback_fail")
-//                setCommandAnimationAsync(CommandType.FEEDBACK_FAIL)
-//                if robotConnection.isConnected {
-//                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_WHA.rawValue))
-//                }
-//            }
-            sendMessage(.string(Constants.PROGRAM_FINISHED))
-    }
-    
-    else if case let item = message {
-        
-        if rcBluetooth.isConnected {
-            printLog(newString: "Integer Sent: \(message)")
-            addCommandToAssessmentArray(message)
-            processCommandForDuration(message)
-        //    printLog(newString: "Array count \(commandsForAssessment.count)")
-          //  printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
-            
-        }  else{ // Connection not ready
-            printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
+            //            if result{
+            //                myPrint("Receive result from Constants.swift: feedback_success")
+            //                setCommandAnimationAsync(CommandType.FEEDBACK_SUCCESS)
+            //                if robotConnection.isConnected {
+            //                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_AWESOME.rawValue))
+            //                }
+            //            }
+            //            else{
+            //                myPrint("Receive result from Constants.swift: feedback_fail")
+            //                setCommandAnimationAsync(CommandType.FEEDBACK_FAIL)
+            //                if robotConnection.isConnected {
+            //                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_WHA.rawValue))
+            //                }
+            //            }
             sendMessage(.string(Constants.PROGRAM_FINISHED))
         }
         
-    }
+        //If it's anything else …
+        else if case let item = message {
+            
+            if rcBluetooth.isConnected {
+                printLog(newString: "Integer Sent: \(message)")
+                addCommandToAssessmentArray(message)
+                processCommandForDuration(message)
+                //    printLog(newString: "Array count \(commandsForAssessment.count)")
+                //  printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+                
+            }  else{ // Connection not ready
+                printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
+                sendMessage(.string(Constants.PROGRAM_FINISHED))
+            }
+            
+        }
         
-}
+    }
     
     public func sendMessage(_ message: PlaygroundValue) {
-   //     printLog(newString: "<Send message to Contants.swift>")
-       rcCommand.durationReset()
+        //     printLog(newString: "<Send message to Contants.swift>")
+        rcCommand.durationReset()
         send(message)
     }
 }
 
- 
+
