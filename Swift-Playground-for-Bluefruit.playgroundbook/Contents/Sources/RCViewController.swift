@@ -1,7 +1,7 @@
 //
 //  RCViewController.swift
 //
-//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+//  Copyright © 2018 Adafruit Industries All rights reserved.
 //  Created by Trevor Beaton on 8/22/17.
 //
 //
@@ -89,7 +89,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator){
         super.viewWillTransition(to: size, with: coordinator)
-        //   printLog(newString: "\(size)")
+        //   printLog("\(size)")
         if(size.width>size.height){
             setupPortraitView(size)
         }
@@ -170,28 +170,24 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     }
     
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
-        //    printLog(newString: " addCommandToAssessmentArray: Phase #1 - Function is called")
         
-        if(self.commandsForAssessment.count <= 30){
-            self.commandsForAssessment.append(command)
-            //printLog(newString: " addCommandToAssessmentArray: Phase #2")
-        }
-        //   printLog(newString: " addCommandToAssessmentArray: Phase #3")
+        self.commandsForAssessment.append(command)
+        
     }
     
     func processCommand(_ command:PlaygroundValue){
-        //    printLog(newString: #function)
+        //    printLog(#function)
         rcCommand.sendRobotCommand(rcBluetooth, command)
     }
     
     func processCommandForDuration(_ item:PlaygroundValue){
-        //     printLog(newString: #function)
+        //     printLog(#function)
         rcCommand.sendRobotDuration(item)
     }
     
     
     func onCommandCompleted(){
-        //   printLog(newString: "Command Completed")
+        //   printLog("Command Completed")
         self.sendMessage(.string(Constants.COMMAND_FINISHED))
     }
     
@@ -332,8 +328,6 @@ public class RCViewController: UIViewController, UITextViewDelegate {
         
     }
     
-    
-    
     private func generateConstraintsForCommentText() -> [NSLayoutConstraint] {
         
         let constraintBottom = NSLayoutConstraint(item: self.commentText, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: -70.0)
@@ -467,7 +461,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
 extension RCViewController: PlaygroundLiveViewMessageHandler {
     
     public func liveViewMessageConnectionOpened(){
-        //      printLog(newString: "<Live View Message Connection Made>  ")
+        //      printLog("<Live View Message Connection Made>  ")
         
     }
     
@@ -476,9 +470,10 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
         //PlaygroundPage.current.finishExecution()
     }
     
-    //Recieve message from Constant.swift
+    //Receive message from LiveView
     public func receive(_ message: PlaygroundValue) {
-        printLog(newString: #function)
+        
+        printLog(#function)
         
         //If it's a string …
         if case let .string(command) = message {
@@ -487,25 +482,25 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
             }
             
             if rcBluetooth.isConnected {
-                //  printLog(newString: "Bluetooth is Online.")
+                //  printLog("Bluetooth is Online.")
                 addCommandToAssessmentArray(message)
                 processCommand(message)
                 
             }
                 
             else{ // Connection not ready
-                printLog(newString: "Connect To RC Before Sending Commands.")
+                printLog("Connect To RC Before Sending Commands.")
             }
         }
-        
-        //If it's a dictionary …
+            
+            //If it's a dictionary …
         else if case let .dictionary(dict) = message { // Connect to robot
-            printLog(newString: "Send message; Command String attempt made")
+            printLog("Send message; Command String attempt made")
             processCommand(message)
             addCommandToAssessmentArray(message)
         }
-        
-        //If it's a boolean …
+            
+            //If it's a boolean …
         else if case let .boolean(result) = message { // Program Results
             //  programStateImage.stopAnimating()
             //isShowingResult = true
@@ -525,19 +520,19 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
             //            }
             sendMessage(.string(Constants.PROGRAM_FINISHED))
         }
-        
-        //If it's anything else …
+            
+            //If it's anything else …
         else if case let item = message {
             
             if rcBluetooth.isConnected {
-                printLog(newString: "Integer Sent: \(message)")
+                printLog("Integer Sent: \(message)")
                 addCommandToAssessmentArray(message)
                 processCommandForDuration(message)
-                //    printLog(newString: "Array count \(commandsForAssessment.count)")
-                //  printLog(newString: "First in the arrray is... \(commandsForAssessment[0])")
+                //    printLog("Array count \(commandsForAssessment.count)")
+                //  printLog("First in the arrray is... \(commandsForAssessment[0])")
                 
             }  else{ // Connection not ready
-                printLog(newString: "Send message; (PROGRAM_FINISHED) attempt made")
+                printLog("Send message; (PROGRAM_FINISHED) attempt made")
                 sendMessage(.string(Constants.PROGRAM_FINISHED))
             }
             
@@ -546,7 +541,7 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
     }
     
     public func sendMessage(_ message: PlaygroundValue) {
-        //     printLog(newString: "<Send message to Contants.swift>")
+        //     printLog("<Send message to Contants.swift>")
         rcCommand.durationReset()
         send(message)
     }

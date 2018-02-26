@@ -3,7 +3,7 @@
 //  
 //
 //  Created by Trevor Beaton on 9/20/17.
-//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+//  Copyright © 2018 Adafruit Industries All rights reserved.
 
 
 import Foundation
@@ -36,14 +36,14 @@ public class UserProcessDelegate: PlaygroundRemoteLiveViewProxyDelegate {
             if text.isEqual(Constants.COMMAND_FINISHED){
                 // Indicate that the handler is ready for more commands.
                 pauseHandler?.isReadyForMoreCommands = true
-            //    printLog(newString: "UserProcess-remoteLiveViewProxy-TEST")
+            //    printLog("UserProcess-remoteLiveViewProxy-TEST")
             }
         }
  
        if case let item = message {
 
                 pauseHandler?.isReadyForMoreCommands = true
-                //    printLog(newString: "UserProcess-remoteLiveViewProxy-TEST")
+                //    printLog("UserProcess-remoteLiveViewProxy-TEST")
         }
         
         

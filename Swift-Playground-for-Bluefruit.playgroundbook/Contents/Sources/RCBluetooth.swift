@@ -2,7 +2,7 @@
 //  RCBluetooth.swift
 //
 //  Created by Trevor Beaton on 12/14/17.
-//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+//  Copyright © 2018 Adafruit Industries All rights reserved.
 //
 
 import Foundation
@@ -15,7 +15,7 @@ import PlaygroundBluetooth
 public var printString = ""
 public var bleStatus: String?
 public var bleStatus2: String?
-public func printLog(newString: String) {
+public func printLog(_ newString: String) {
     let appendString = "\n"
     printString = newString + appendString
     NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Print"), object: nil)
@@ -70,9 +70,9 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     public func centralManagerStateDidChange(_ centralManager: PlaygroundBluetoothCentralManager) {
         if centralManager.state == .poweredOn {
             isConnected = true
-            printLog(newString: "Bluetooth is Enabled.")
+            printLog("Bluetooth is Enabled.")
        }else {
-            printLog(newString: "Bluetooth is Disabled. Turn On Bluetooth in Control Panel.")
+            printLog("Bluetooth is Disabled. Turn On Bluetooth in Control Panel.")
         }
     }
   
@@ -152,7 +152,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     // Callback on data arrival via notification on the characteristic
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
     guard error == nil else {
-      printLog(newString: "Error discovering services: \(error!.localizedDescription)")
+      printLog("Error discovering services: \(error!.localizedDescription)")
       return
     }
     if characteristic.uuid.isEqual(BLE_Characteristic_uuid_Rx) {
@@ -219,42 +219,42 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   
   
     public func moveForward(){
-      printLog(newString: "<Forward>")
+      printLog("<Forward>")
       writeValue22(data: forwardString)
     }
     
     public func stopForward(){
-  //    printLog(newString: "<Forward Stopped>")
+  //    printLog("<Forward Stopped>")
       writeValue22(data: stopString)
     }
     
     public  func moveBack(){
-    printLog(newString: "<Back>")
+    printLog("<Back>")
     writeValue22(data: backString)
   }
 
     public func stopBack(){
- //     printLog(newString: "<Back Stopped>")
+ //     printLog("<Back Stopped>")
       writeValue22(data: backStopString)
     }
 
     public func turnRight(){
-      printLog(newString: "<Turning Right>")
+      printLog("<Turning Right>")
       writeValue22(data: rightString)
     }
 
     public func stopRight(){
-  //    printLog(newString: "<Right Stopped>")
+  //    printLog("<Right Stopped>")
       writeValue22(data: rightStop)
     }
 
     public func turnLeft(){
-        printLog(newString: "<Turning Left>")
+        printLog("<Turning Left>")
          writeValue22(data: leftString)
     }
 
     public func stopLeft(){
-    //  printLog(newString: "<Left Stopped>")
+    //  printLog("<Left Stopped>")
       writeValue22(data: leftStop)
     }
 

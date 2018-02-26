@@ -1,6 +1,6 @@
 //Newer
 //  Created by Trevor Beaton on 12/14/17.
-//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+//  Copyright © 2018 Adafruit Industries All rights reserved.
 import Foundation
 import PlaygroundSupport
 import PlaygroundBluetooth
@@ -25,6 +25,8 @@ public func setup(){
 public func assessment(_ playgroundValue:PlaygroundValue)->Bool{
     // Assessment
     
+//    printLog("assessment called")
+    
     var correctSolution:[CommandType] = [  CommandType.COMMAND_MOVE_FORWARD, CommandType.COMMAND_TURN_RIGHT, CommandType.COMMAND_MOVE_FORWARD ]
     
     var commands:[PlaygroundValue] = [PlaygroundValue]()
@@ -45,7 +47,7 @@ public func assessment(_ playgroundValue:PlaygroundValue)->Bool{
         PlaygroundPage.current.assessmentStatus = .pass(message: NSLocalizedString("### Yes! You did it...now on to the next lesson?...I think? \n\n[**Next Page**](@next)", comment: ""))
     }
     else{
-        // printLog(newString: "Fail")
+        // printLog("Fail")
         PlaygroundPage.current.assessmentStatus = .fail(hints: failureHints, solution: nil)
     }
     return result

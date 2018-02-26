@@ -3,7 +3,7 @@
 //
 //
 //  Created by Trevor Beaton on 9/5/17.
-//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+//  Copyright © 2018 Adafruit Industries All rights reserved.
 
 
 import Foundation
@@ -37,11 +37,11 @@ public class RCCommand: NSObject {
          var testString = "\(command)"
          let result = testString.trimmingCharacters(in: CharacterSet(charactersIn: "01234567890.").inverted)
          duration = Int(result)!
-         printLog(newString: "Result: \(result)")
+         printLog("Result: \(result)")
     }
   
     public func durationReset(){
-        printLog(newString: "Duration Has Been Reset to 300 milliseconds.")
+        printLog("Duration Has Been Reset to 300 milliseconds.")
         duration = 750
     }
     
@@ -57,22 +57,22 @@ public class RCCommand: NSObject {
             case CommandType.COMMAND_MOVE_FORWARD.rawValue:
                 fourBytes = MOVE_FORWARD
              //   duration = 800
-                printLog(newString: "Forward Duration: \(duration)")
+                printLog("Forward Duration: \(duration)")
                 break
             case CommandType.COMMAND_MOVE_BACKWARD.rawValue:
                 fourBytes = MOVE_BACKWARD
             //    duration = 800
-                printLog(newString: "Backward Duration: \(duration)")
+                printLog("Backward Duration: \(duration)")
                 break
             case CommandType.COMMAND_TURN_RIGHT.rawValue:
                  fourBytes = TURN_LEFT
                //  duration = 600
-                printLog(newString: "Right Duration: \(duration)")
+                printLog("Right Duration: \(duration)")
                 break
             case CommandType.COMMAND_TURN_LEFT.rawValue:
                 fourBytes = TURN_RIGHT
              //   duration = 600
-                printLog(newString: "Left Duration: \(duration)")
+                printLog("Left Duration: \(duration)")
             default:
                 break
             }
@@ -81,7 +81,7 @@ public class RCCommand: NSObject {
                 rcBluetooth.sendRcData(data, duration)
             }
             else{
-                printLog(newString: "Data was not sent.")
+                printLog("Data was not sent.")
             }
             break
         default:
@@ -91,8 +91,8 @@ public class RCCommand: NSObject {
   
     
     public static func solutionChecker(_ commands:[PlaygroundValue], _ correctSolution:[CommandType])->Bool{
-      printLog(newString: #function)
-      printLog(newString: "Array Count: \(commands.count)")
+      printLog(#function)
+      printLog("Array Count: \(commands.count)")
         var result:Bool = false
       
          if commands.count == correctSolution.count{
