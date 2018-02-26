@@ -15,6 +15,7 @@ import PlaygroundBluetooth
 public var printString = ""
 public var bleStatus: String?
 public var bleStatus2: String?
+
 public func printLog(_ newString: String) {
     let appendString = "\n"
     printString = newString + appendString

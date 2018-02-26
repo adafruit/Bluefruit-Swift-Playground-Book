@@ -171,6 +171,8 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     func addCommandToAssessmentArray(_ command:PlaygroundValue){
         
+        printLog("--> adding command \(command)")
+        
         self.commandsForAssessment.append(command)
         
     }
@@ -188,7 +190,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     
     func onCommandCompleted(){
         //   printLog("Command Completed")
-        self.sendMessage(.string(Constants.COMMAND_FINISHED))
+        self.sendMessageAndResetDuration(.string(Constants.COMMAND_FINISHED))
     }
     
     func onCommandCompleted2(){
@@ -402,7 +404,7 @@ public class RCViewController: UIViewController, UITextViewDelegate {
     func exitProgram(){
         // All commands executed
         let message: PlaygroundValue = .array(commandsForAssessment)
-        sendMessage(message)
+        sendMessageAndResetDuration(message)
         commandsForAssessment.removeAll()
     }
     
@@ -473,76 +475,49 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
     //Receive message from LiveView
     public func receive(_ message: PlaygroundValue) {
         
-        printLog(#function)
+//        printLog(#function)
+        
+        //If there's no BT connection, abort mission
+        if rcBluetooth.isConnected == false {
+            printLog("Connect To Car Before Sending Commands")
+//            sendMessageAndResetDuration(.string(Constants.PROGRAM_FINISHED))
+            return
+        }
         
         //If it's a string …
         if case let .string(command) = message {
             if command.isEqual(CommandType.COMMAND_EXIT_PROGRAM.rawValue){
                 exitProgram()
             }
-            
-            if rcBluetooth.isConnected {
-                //  printLog("Bluetooth is Online.")
-                addCommandToAssessmentArray(message)
-                processCommand(message)
-                
-            }
-                
-            else{ // Connection not ready
-                printLog("Connect To RC Before Sending Commands.")
-            }
+            addCommandToAssessmentArray(message)
+            processCommand(message)
         }
             
-            //If it's a dictionary …
+        //If it's a dictionary …
         else if case let .dictionary(dict) = message { // Connect to robot
             printLog("Send message; Command String attempt made")
             processCommand(message)
             addCommandToAssessmentArray(message)
         }
             
-            //If it's a boolean …
-        else if case let .boolean(result) = message { // Program Results
-            //  programStateImage.stopAnimating()
-            //isShowingResult = true
-            //            if result{
-            //                myPrint("Receive result from Constants.swift: feedback_success")
-            //                setCommandAnimationAsync(CommandType.FEEDBACK_SUCCESS)
-            //                if robotConnection.isConnected {
-            //                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_AWESOME.rawValue))
-            //                }
-            //            }
-            //            else{
-            //                myPrint("Receive result from Constants.swift: feedback_fail")
-            //                setCommandAnimationAsync(CommandType.FEEDBACK_FAIL)
-            //                if robotConnection.isConnected {
-            //                    robotCommand.sendRobotCommand(robotConnection, PlaygroundValue.string(CommandType.COMMAND_SOUND_WHA.rawValue))
-            //                }
-            //            }
-            sendMessage(.string(Constants.PROGRAM_FINISHED))
+        //If it's a boolean …
+        else if case let .boolean(result) = message {
+            sendMessageAndResetDuration(.string(Constants.PROGRAM_FINISHED))
         }
             
-            //If it's anything else …
+        //If it's anything else …
         else if case let item = message {
-            
-            if rcBluetooth.isConnected {
-                printLog("Integer Sent: \(message)")
-                addCommandToAssessmentArray(message)
-                processCommandForDuration(message)
-                //    printLog("Array count \(commandsForAssessment.count)")
-                //  printLog("First in the arrray is... \(commandsForAssessment[0])")
-                
-            }  else{ // Connection not ready
-                printLog("Send message; (PROGRAM_FINISHED) attempt made")
-                sendMessage(.string(Constants.PROGRAM_FINISHED))
-            }
+//            printLog("Integer Sent: \(message)")
+            addCommandToAssessmentArray(message)
+            processCommandForDuration(message)
             
         }
         
     }
     
-    public func sendMessage(_ message: PlaygroundValue) {
-        //     printLog("<Send message to Contants.swift>")
-        rcCommand.durationReset()
+    public func sendMessageAndResetDuration(_ message: PlaygroundValue) {
+        //     printLog("<Send message to Contents.swift>")
+        rcCommand.resetDuration()
         send(message)
     }
 }

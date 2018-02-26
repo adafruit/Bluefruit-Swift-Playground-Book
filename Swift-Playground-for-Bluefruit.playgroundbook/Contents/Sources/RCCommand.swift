@@ -40,8 +40,8 @@ public class RCCommand: NSObject {
          printLog("Result: \(result)")
     }
   
-    public func durationReset(){
-        printLog("Duration Has Been Reset to 300 milliseconds.")
+    public func resetDuration(){
+//        printLog("Duration Has Been Reset.")
         duration = 750
     }
     
