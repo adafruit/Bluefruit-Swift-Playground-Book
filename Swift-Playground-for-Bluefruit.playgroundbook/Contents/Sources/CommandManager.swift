@@ -3,7 +3,7 @@
 //  
 //
 //  Created by Trevor Beaton on 12/14/17.
-//  Copyright © 2017 Vanguard Logic LLC. All rights reserved.
+//  Copyright © 2018 Adafruit Industries All rights reserved.
 
 import Foundation
 import PlaygroundSupport
@@ -47,7 +47,7 @@ public class CommandManager: CommandPauseDelegate {
   
   
     public func sendCommand(_ commandData:PlaygroundValue) {
-      printLog(newString: "SendCommand")
+      printLog("SendCommand")
       let page = PlaygroundPage.current
         if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
             proxy.send(commandData)
@@ -98,6 +98,6 @@ public class CommandManager: CommandPauseDelegate {
     }
  
     public func intTaker(){
-    printLog(newString: "Hello")
+    printLog("Hello")
     }
 }
