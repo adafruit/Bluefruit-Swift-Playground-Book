@@ -10,7 +10,6 @@ import CoreBluetooth
 import PlaygroundSupport
 import PlaygroundBluetooth
 
-
 //Global variables and print funtion for debugging
 public var printString = ""
 public var bleStatus: String?
@@ -24,11 +23,9 @@ public func printLog(_ newString: String) {
 
 public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, CBPeripheralDelegate {
 
-  
     // Mark:- Data
   
-  
-    var timer = Timer()
+//    var timer = Timer()
     var duration: Int = 2000
     var txCharacteristic : CBCharacteristic?
     var rxCharacteristic : CBCharacteristic?
@@ -44,6 +41,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     //Private variables
     private var blePeripheral: CBPeripheral?
     private let data = NSMutableData()
+    private let dataBuffer = NSMutableData()
   
     //Motion String Commands
     var forwardString = "!B516"
@@ -215,9 +213,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     sendCommand = "\(dataWithChecksum)"
   }
   
-  
   // Mark:- Motion Functions
-  
   
     public func moveForward(){
       printLog("<Forward>")
