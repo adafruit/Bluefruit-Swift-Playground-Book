@@ -14,7 +14,7 @@ public enum CommandType: String {
     case COMMAND_MOVE_BACKWARD  =  "command_moveBackward"
     case COMMAND_TURN_RIGHT     =  "command_turnRight"
     case COMMAND_TURN_LEFT      =  "command_turnLeft"
-    case COMMAND_PAUSE           = "command_pause"
+    case COMMAND_PAUSE          =  "command_pause"
     case COMMAND_EXIT_PROGRAM   =  "ExitProgram"
     
 }
@@ -56,7 +56,6 @@ public class CommandManager: CommandPauseDelegate {
         isReadyForMoreCommands = false
          wait()
     }
-    
     
     
     public func moveForward(){

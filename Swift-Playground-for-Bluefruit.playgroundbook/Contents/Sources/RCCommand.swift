@@ -33,24 +33,17 @@ public class RCCommand: NSObject {
     
     let MOVE_BACKWARD : [Int8] = [ 0x21, 0x42, 0x36, 0x31, 0x35 ] //!B615
     let MOVE_FORWARD : [Int8] = [ 0x21, 0x42, 0x35, 0x31, 0x36 ] //!B516
-    let TURN_RIGHT : [Int8] = [ 0x21, 0x42, 0x37, 0x31, 0x34 ] //!B714
-    let TURN_LEFT : [Int8] = [ 0x21, 0x42, 0x38, 0x31, 0x33 ] //!B813
+    let TURN_RIGHT : [Int8] = [ 0x21, 0x42, 0x38, 0x31, 0x33 ] //!B813
+    let TURN_LEFT : [Int8] = [ 0x21, 0x42, 0x37, 0x31, 0x34 ] //!B714
     let PAUSE : [Int8] = [ 0x21, 0x42, 0x35, 0x30, 0x37 ] //!B507
     
     //:- Functions
-    
-//    public func setRobotDuration(_ command: PlaygroundValue){
-//        var testString = "\(command)"
-//        let result = testString.trimmingCharacters(in: CharacterSet(charactersIn: "01234567890.").inverted)
-//        duration = Int(result)!
-//        printLog("Result: \(result)")
-//    }
     
     public func sendRobotCommand(_ rcBluetooth: RCBluetooth, _ command: PlaygroundValue){
         
         switch command {
         case let .integer(text):
-            printLog("--> sendRobotCommand Int = \(text)")
+//            printLog("--> sendRobotCommand Int = \(text)")
             duration = text
             break
         case let .string(text):
@@ -58,21 +51,27 @@ public class RCCommand: NSObject {
             switch(text) {
             case CommandType.COMMAND_PAUSE.rawValue:
                 fourBytes = PAUSE
+                printLog("Sending: Wait, Duration: \(duration)")
+                break
             case CommandType.COMMAND_MOVE_FORWARD.rawValue:
                 fourBytes = MOVE_FORWARD
-//                printLog("Forward Duration: \(duration)")
+//                printLog("Sending: Forward, Duration: \(duration)")
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_MOVE_FORWARD.rawValue])
                 break
             case CommandType.COMMAND_MOVE_BACKWARD.rawValue:
                 fourBytes = MOVE_BACKWARD
-//                printLog("Backward Duration: \(duration)")
+//                printLog("Sending: Back, Duration: \(duration)")
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_MOVE_BACKWARD.rawValue])
                 break
             case CommandType.COMMAND_TURN_RIGHT.rawValue:
-                fourBytes = TURN_LEFT
-//                printLog("Right Duration: \(duration)")
+                fourBytes = TURN_RIGHT
+//                printLog("Sending: Right, Duration: \(duration)")
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_TURN_RIGHT.rawValue])
                 break
             case CommandType.COMMAND_TURN_LEFT.rawValue:
-                fourBytes = TURN_RIGHT
-//                printLog("Left Duration: \(duration)")
+                fourBytes = TURN_LEFT
+//                printLog("Sending: Left, Duration: \(duration)")
+                NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_TURN_LEFT.rawValue])
             default:
                 break
             }
@@ -90,7 +89,7 @@ public class RCCommand: NSObject {
         }
     }
     
-    /* WHEELIE PREVENTION ///////////////
+    /*// WHEELIE PREVENTION ///////////////
     func scheduleSendData(_ data:Data, duration:Int){
         printLog("--->scheduleSendData 0")
         let timer = Timer.scheduledTimer(
@@ -113,6 +112,7 @@ public class RCCommand: NSObject {
 //        printLog("--->sendDataFromTimer 4")
     }
     */
+    
     
     public static func solutionChecker(_ commands:[PlaygroundValue], _ correctSolution:[CommandType])->Bool{
         printLog(#function)

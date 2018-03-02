@@ -56,39 +56,47 @@ public func dance(){
  create a function reference that takes the duration time and sends it to the command manager function that will be sent to the RCCommand.Duration
  */
 
-public func moveForward(_ seconds: Int) {
-    let page = PlaygroundPage.current
-    if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
-        let message = PlaygroundValue.integer(seconds)
-        proxy.send(message)
-        commandManager.moveForward()
+    public func moveForward(_ seconds: Int) {
+        let page = PlaygroundPage.current
+        if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
+            let message = PlaygroundValue.integer(seconds)
+            proxy.send(message)
+            commandManager.moveForward()
+        }
     }
+
+    public func moveBack(_ seconds: Int) {
+        let page = PlaygroundPage.current
+        if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
+            let message = PlaygroundValue.integer(seconds)
+            proxy.send(message)
+            commandManager.moveBack()
+        }
+    }
+
+    public func turnLeft(_ seconds: Int) {
+        let page = PlaygroundPage.current
+        if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
+            let message = PlaygroundValue.integer(seconds)
+            proxy.send(message)
+            commandManager.turnLeft()
+        }
+    }
+
+    public func turnRight(_ seconds: Int) {
+        let page = PlaygroundPage.current
+        if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
+            let message = PlaygroundValue.integer(seconds)
+            proxy.send(message)
+            commandManager.turnRight()
+        }
 }
-
-public func moveBack(_ seconds: Int) {
-    let page = PlaygroundPage.current
-    if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
-        let message = PlaygroundValue.integer(seconds)
-        proxy.send(message)
-        commandManager.moveBack()
-    }
-}
-
-public func turnLeft(_ seconds: Int) {
-    let page = PlaygroundPage.current
-    if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
-        let message = PlaygroundValue.integer(seconds)
-        proxy.send(message)
-        commandManager.turnLeft()
-    }
-}
-
-
-public func turnRight(_ seconds: Int) {
-    let page = PlaygroundPage.current
-    if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
-        let message = PlaygroundValue.integer(seconds)
-        proxy.send(message)
-        commandManager.turnRight()
-    }
+    
+    public func wait(_ seconds: Int) {
+        let page = PlaygroundPage.current
+        if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
+            let message = PlaygroundValue.integer(seconds)
+            proxy.send(message)
+            commandManager.pause()
+        }
 }

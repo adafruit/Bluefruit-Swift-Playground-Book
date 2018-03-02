@@ -19,13 +19,14 @@ protocol ControllerPadViewControllerDelegate: class {
 
 var sendCommand : String?
 
-public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundLiveViewSafeAreaContainer {
+public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundLiveViewSafeAreaContainer, PlaygroundBluetoothConnectionViewDelegate, PlaygroundBluetoothConnectionViewDataSource {
     //Data
     //Page ID
     var page: Int = 1
     //Data
     var bleView: PlaygroundBluetoothConnectionView!
-    let bleViewDelegate = ConnectionViewDelegate()
+    let carImageView = UIImageView(image: UIImage(imageLiteralResourceName:"Images/myminiracecar-vector1-500px.png") as UIImage?)
+//    let bleViewDelegate = ConnectionViewDelegate()
     var btViewConstraints = [NSLayoutConstraint]()
     var isLandscape:Bool = true
     var isPortraitMode:Bool = true
@@ -34,7 +35,6 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     var commandsForAssessment:[PlaygroundValue] = [PlaygroundValue]()
     private let buttonPrefix = "!B"
     
-    
     //Button Setup
     public let logView = UITextView(frame: CGRect.zero)
     public let clearButton = UIButton(frame: CGRect.zero)
@@ -42,18 +42,14 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     var backButton: UIButton!
     var leftButton: UIButton!
     var rightButton: UIButton!
+    var buttons: [UIButton] = []
+    let buttonDisabledColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+    let buttonEnabledColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+    let controlPadView = UIView(frame: CGRect.zero)
     var blePeripheral: CBPeripheral!
     
     // Data
     weak var delegate: ControllerPadViewControllerDelegate?
-    
-    func updateTextView() {
-        let newLine = "\n"
-        var newText = logView.text!
-        newText += printString
-        logView.text = newText
-        scrollToBottom()
-    }
     
     public required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
@@ -78,7 +74,20 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         
         self.logView.delegate = self
         
+        //subscribe to bluetooth connection notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(respondToConnection),name:NSNotification.Name(rawValue: "Bluetooth Connected"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(respondToDisconnection),name:NSNotification.Name(rawValue: "Bluetooth Disconnected"), object: nil)
+        
+        //subscribe to command notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(respondToCommand),name:NSNotification.Name(rawValue: "Command"), object: nil)
+        
+        
+        //subscribe to print log notifications
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView),name:NSNotification.Name(rawValue: "Print"), object: nil)
+        
+        //subscribe to keyboard notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -105,6 +114,97 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         if let delegate = delegate {
             delegate.onSendControllerPadButtonStatus(tag: tag, isPressed: isPressed)
         }
+    }
+    
+    //respond to print log calls
+    func updateTextView() {
+        let newLine = "\n"
+        var newText = logView.text!
+        newText += printString
+        logView.text = newText
+        scrollToBottom()
+    }
+    
+    // respond to bluetooth connection status changes
+    @objc func respondToConnection() {
+        printLog("Bluefruit device connected")
+        enableControlButtons(true)
+    }
+    
+    @objc func respondToDisconnection() {
+        printLog("Bluefruit device disconnected")
+        enableControlButtons(false)
+    }
+    
+    func enableControlButtons(_ enabled:Bool) {
+        for button in buttons{
+            button.isEnabled = enabled
+            if enabled{
+                button.backgroundColor = buttonEnabledColor
+            }
+            else {
+                button.backgroundColor = buttonDisabledColor
+            }
+        }
+    }
+    
+    //respond to commands
+    @objc func respondToCommand(notification: NSNotification){
+        
+        // Adjust UI buttons for command
+        
+        let info = notification.object as! Dictionary<String, AnyObject>
+        let type:String = (info["Command"] as! String)
+        
+//        printLog("command event = \(type)")
+        
+        switch type {
+        case CommandType.COMMAND_MOVE_FORWARD.rawValue:
+            forwardButton.isSelected = true
+            forwardButton.layer.borderWidth = 1
+            break
+        case CommandType.COMMAND_MOVE_BACKWARD.rawValue:
+            backButton.isSelected = true
+            backButton.layer.borderWidth = 1
+            
+            break
+        case CommandType.COMMAND_TURN_LEFT.rawValue:
+            leftButton.isSelected = true
+            leftButton.layer.borderWidth = 1
+            break
+        case CommandType.COMMAND_TURN_RIGHT.rawValue:
+            rightButton.isSelected = true
+            rightButton.layer.borderWidth = 1
+            break
+        case "Stop":
+            for button in buttons{
+                button.isSelected = false
+                button.layer.borderWidth = 0
+            }
+            break
+        default:
+            break
+        }
+    }
+    
+    // respond to keyboard changes
+    @objc func keyboardWillShow(notification: NSNotification) {
+        let targetFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+//        printLog("keyboardWillShow height = \(targetFrame.height)")
+        if targetFrame.height >= 60.0{
+            logView.isHidden = true
+            clearButton.isHidden = true
+        }
+        else {
+            logView.isHidden = false
+            clearButton.isHidden = false
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification){
+//        printLog("keyboardWillHide")
+        logView.isHidden = false
+        clearButton.isHidden = false
     }
     
     // MARK: - Actions
@@ -172,7 +272,7 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     
     func processCommand(_ command:PlaygroundValue){
         //    printLog(#function)
-        printLog("--> adding assessment val \(command)")
+//        printLog("--> adding assessment val \(command)")
         self.commandsForAssessment.append(command)
         rcCommand.sendRobotCommand(rcBluetooth, command)
     }
@@ -184,17 +284,7 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     
     func UISetup() {
         
-        
         isLandscape = (self.view.frame.width > self.view.frame.height)
-        
-        //Connecting Bluetooth View
-        bleView = PlaygroundBluetoothConnectionView(centralManager: rcBluetooth.centralManager!)
-        bleView.delegate = bleViewDelegate
-        bleView.dataSource = bleViewDelegate
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) {
-            self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()
-        }
-        self.view.addSubview(bleView)
         
         // Log View
         logView.translatesAutoresizingMaskIntoConstraints = false
@@ -205,7 +295,7 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         logView.textAlignment = .left
         logView.textContainer.lineBreakMode = .byWordWrapping
         logView.layer.borderWidth = 0
-        logView.layer.cornerRadius = 18
+        logView.layer.cornerRadius = 12
         view.addSubview(logView)
         view.addConstraints(generateConstraintsForLogView())
         
@@ -216,7 +306,6 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         clearButton.alpha = 0.5
         clearButton.backgroundColor = UIColor.clear
         clearButton.layer.borderWidth = 0
-        clearButton.layer.cornerRadius = 9
         clearButton.tag = 9
         clearButton.addTarget(self, action: #selector(onTouchUpClear(_:)), for: .touchUpInside)
         view.addSubview(clearButton)
@@ -226,58 +315,96 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         forwardButton = UIButton(frame: CGRect(x: 320, y: 70, width: 83, height: 60))
         forwardButton.setTitle("Forward", for: .normal)
         forwardButton.setTitleColor(UIColor.white, for: .normal)
-        forwardButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        forwardButton.setTitleColor(UIColor.lightGray, for: .disabled)
+        forwardButton.setTitleColor(buttonEnabledColor, for: UIControlState.selected)
+        forwardButton.backgroundColor = buttonDisabledColor
         forwardButton.layer.borderWidth = 0
-        forwardButton.layer.cornerRadius = 18
+        forwardButton.layer.borderColor = UIColor.white.cgColor
+        forwardButton.layer.cornerRadius = 12
         forwardButton.tag = 5
         forwardButton.addTarget(self, action: #selector(onTouchDownForward(_:)), for: .touchDown)
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchUpInside)
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchDragExit)
         forwardButton.addTarget(self, action: #selector(onTouchUpForward(_:)), for: .touchCancel)
+        forwardButton.isEnabled = false
         view.addSubview(forwardButton)
         
         // Back button
         backButton = UIButton(frame: CGRect(x: 320, y: 210, width: 83, height: 60))
         backButton.setTitle("Back", for: .normal)
         backButton.setTitleColor(UIColor.white, for: .normal)
-        backButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        backButton.setTitleColor(UIColor.lightGray, for: .disabled)
+        backButton.setTitleColor(buttonEnabledColor, for: UIControlState.selected)
+        backButton.backgroundColor = buttonDisabledColor
         backButton.layer.borderWidth = 0
-        backButton.layer.cornerRadius = 18
+        backButton.layer.borderColor = UIColor.white.cgColor
+        backButton.layer.cornerRadius = 12
         backButton.tag = 6
         backButton.addTarget(self, action: #selector(onTouchDownBack(_:)), for: .touchDown)
         backButton.addTarget(self, action: #selector(onTouchUpBack(_:)), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(onTouchUpBack(_:)), for: .touchDragExit)
         backButton.addTarget(self, action: #selector(onTouchUpBack(_:)), for: .touchCancel)
+        backButton.isEnabled = false
         view.addSubview(backButton)
         
         // Left button
         leftButton = UIButton(frame: CGRect(x: 270, y: 140, width: 83, height: 60))
         leftButton.setTitle("Left", for: .normal)
         leftButton.setTitleColor(UIColor.white, for: .normal)
-        leftButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        leftButton.setTitleColor(UIColor.lightGray, for: .disabled)
+        leftButton.setTitleColor(buttonEnabledColor, for: UIControlState.selected)
+        leftButton.backgroundColor = buttonDisabledColor
         leftButton.tag = 7
         leftButton.layer.borderWidth = 0
-        leftButton.layer.cornerRadius = 18
+        leftButton.layer.borderColor = UIColor.white.cgColor
+        leftButton.layer.cornerRadius = 12
         leftButton.addTarget(self, action: #selector(onTouchDownLeft(_:)), for: .touchDown)
         leftButton.addTarget(self, action: #selector(onTouchUpLeft(_:)), for: .touchUpInside)
         leftButton.addTarget(self, action: #selector(onTouchUpLeft(_:)), for: .touchDragExit)
         leftButton.addTarget(self, action: #selector(onTouchUpLeft(_:)), for: .touchCancel)
+        leftButton.isEnabled = false
         view.addSubview(leftButton)
         
         // Right button
         rightButton = UIButton(frame: CGRect(x: 375, y: 140, width: 83, height: 60))
         rightButton.setTitle("Right", for: .normal)
         rightButton.setTitleColor(UIColor.white, for: .normal)
-        rightButton.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        rightButton.setTitleColor(UIColor.lightGray, for: .disabled)
+        rightButton.setTitleColor(buttonEnabledColor, for: UIControlState.selected)
+        rightButton.backgroundColor = buttonDisabledColor
         rightButton.layer.borderWidth = 0
-        rightButton.layer.cornerRadius = 18
+        rightButton.layer.borderColor = UIColor.white.cgColor
+        rightButton.layer.cornerRadius = 12
         rightButton.tag = 8
         rightButton.addTarget(self, action: #selector(onTouchDownRight(_:)), for: .touchDown)
         rightButton.addTarget(self, action: #selector(onTouchUpRight(_:)), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(onTouchUpRight(_:)), for: .touchDragExit)
         rightButton.addTarget(self, action: #selector(onTouchUpRight(_:)), for: .touchCancel)
+        rightButton.isEnabled = false
         view.addSubview(rightButton)
         
+        //store buttons for group enabling/disabling
+        buttons = [forwardButton, backButton, leftButton, rightButton]
+        
+        //add control pad view to view
+//        controlPadView.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(controlPadView)
+//        view.addConstraints(generateConstraintsForControlPadView(toView: view))
+        
+        //add car image
+//        carImageView.translatesAutoresizingMaskIntoConstraints = false
+//        carImageView.contentMode = UIViewContentMode.scaleAspectFit
+//        view.addSubview(carImageView)
+//        view.addConstraints(generateConstraintsForCarImageView(toView: view))
+        
+        //Add Connecting Bluetooth View
+        bleView = PlaygroundBluetoothConnectionView(centralManager: rcBluetooth.centralManager!)
+        bleView.delegate = self
+        bleView.dataSource = self
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) {
+        //            self.rcBluetooth.centralManager!.connectToLastConnectedPeripheral()   //UI can't respond to this change!
+        //        }
+        self.view.addSubview(bleView)
         
         if(isLandscape){
             setupLandscapeView(CGSize(width: self.view.frame.width/2, height: self.view.frame.height))
@@ -290,16 +417,16 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     
     private func generateConstraintsForLogView() -> [NSLayoutConstraint] {
         
-        let constraintBottom = NSLayoutConstraint(item: self.logView,
-                                                  attribute: .bottom,
-                                                  relatedBy: .equal,
-                                                  toItem: view,
-                                                  attribute: .bottom,
-                                                  multiplier: 1.0,
-                                                  constant: -70.0)
+//        let constraintBottom = NSLayoutConstraint(item: self.logView,
+//                                                  attribute: .bottom,
+//                                                  relatedBy: .equal,
+//                                                  toItem: view,
+//                                                  attribute: .bottom,
+//                                                  multiplier: 1.0,
+//                                                  constant: -70.0)
         
         //using this constraint instead of the above will prevent run button from blocking log window
-//        let constraintBottom = logView.bottomAnchor.constraint(equalTo: self.liveViewSafeAreaGuide.bottomAnchor, constant: 0.0)
+        let constraintBottom = logView.bottomAnchor.constraint(equalTo: self.liveViewSafeAreaGuide.bottomAnchor, constant: 0.0)
         
         let constraintLeading = NSLayoutConstraint(item: self.logView,
                                                    attribute: .leading,
@@ -362,6 +489,84 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         return [constraintTop, constraintWidth, constraintTrailing, constraintHeight]
     }
     
+    private func generateConstraintsForCarImageView(toView:UIView) -> [NSLayoutConstraint] {
+        
+        // Create constraints for the clear button
+        let constraintTop = NSLayoutConstraint(item: self.carImageView,
+                                               attribute: .top,
+                                               relatedBy: .equal,
+                                               toItem: toView,
+                                               attribute: .top,
+                                               multiplier: 1.0,
+                                               constant: 10.0)
+        
+        let constraintBottom = NSLayoutConstraint(item: self.carImageView,
+                                                  attribute: .bottom,
+                                                  relatedBy: .equal,
+                                                  toItem: logView,
+                                                  attribute: .top,
+                                                  multiplier: 1.0,
+                                                  constant: -10.0)
+        
+        let constraintLeading = NSLayoutConstraint(item: self.carImageView,
+                                                   attribute: .leading,
+                                                   relatedBy: .equal,
+                                                   toItem: toView,
+                                                   attribute: .leading,
+                                                   multiplier: 1.0,
+                                                   constant: 10.0)
+        
+        let constraintTrailing = NSLayoutConstraint(item: self.carImageView,
+                                                    attribute: .trailing,
+                                                    relatedBy: .equal,
+                                                    toItem: toView,
+                                                    attribute: .centerX,
+                                                    multiplier: 1.0,
+                                                    constant: -10.0)
+        
+        // Return the constraints in an array
+        return [constraintTop, constraintBottom, constraintLeading, constraintTrailing]
+    }
+    
+    private func generateConstraintsForControlPadView(toView:UIView) -> [NSLayoutConstraint] {
+        
+        // Create constraints for the clear button
+        let constraintTop = NSLayoutConstraint(item: self.controlPadView,
+                                               attribute: .top,
+                                               relatedBy: .equal,
+                                               toItem: toView,
+                                               attribute: .top,
+                                               multiplier: 1.0,
+                                               constant: 10.0)
+        
+        let constraintBottom = NSLayoutConstraint(item: self.controlPadView,
+                                                  attribute: .bottom,
+                                                  relatedBy: .equal,
+                                                  toItem: logView,
+                                                  attribute: .top,
+                                                  multiplier: 1.0,
+                                                  constant: -10.0)
+        
+        let constraintLeading = NSLayoutConstraint(item: self.controlPadView,
+                                                   attribute: .leading,
+                                                   relatedBy: .equal,
+                                                   toItem: toView,
+                                                   attribute: .centerX,
+                                                   multiplier: 1.0,
+                                                   constant: 10.0)
+        
+        let constraintTrailing = NSLayoutConstraint(item: self.controlPadView,
+                                                    attribute: .trailing,
+                                                    relatedBy: .equal,
+                                                    toItem: toView,
+                                                    attribute: .trailing,
+                                                    multiplier: 1.0,
+                                                    constant: -10.0)
+        
+        // Return the constraints in an array
+        return [constraintTop, constraintBottom, constraintLeading, constraintTrailing]
+    }
+    
     //- LANDSCAPE ORIENTATION
     func setupLandscapeView(_ size:CGSize){
         isLandscape = true
@@ -413,14 +618,22 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     
     
     func exitProgram(){
+        
+//        printLog("exitProgram command count = \(commandsForAssessment.count)")
+        //prevent evaluation if no commands sent
+        if commandsForAssessment.count == 0 {
+            enableControlButtons(true)
+            return
+        }
+        
         // All commands executed
         let message: PlaygroundValue = .array(commandsForAssessment)
         send(message)
         commandsForAssessment.removeAll()
     }
     
-    class ConnectionViewDelegate: PlaygroundBluetoothConnectionViewDelegate, PlaygroundBluetoothConnectionViewDataSource {
-        
+//    class ConnectionViewDelegate: PlaygroundBluetoothConnectionViewDelegate, PlaygroundBluetoothConnectionViewDataSource {
+    
         //PlaygroundBluetoothConnectionViewDataSource
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, itemForPeripheral peripheral: CBPeripheral, withAdvertisementData advertisementData: [String : Any]?) -> PlaygroundBluetoothConnectionView.Item {
             // Displays UI elements for connectivity
@@ -440,56 +653,61 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
             // Provide a localized title for the given state of the connection view.
             switch state {
             case .noConnection:
-                return NSLocalizedString("Connect RC", comment: "")
+                return NSLocalizedString("Connect", comment: "")
             case .connecting:
-                return NSLocalizedString("Connecting to RC", comment: "")
+                return NSLocalizedString("Connecting …", comment: "")
             case .searchingForPeripherals:
-                return NSLocalizedString("Searching for RC", comment: "")
+                return NSLocalizedString("Searching …", comment: "")
             case .selectingPeripherals:
-                return NSLocalizedString("Select your RC", comment: "")
+                return NSLocalizedString("Select your car", comment: "")
             case .connectedPeripheralFirmwareOutOfDate:
-                return NSLocalizedString("Connect to a Different RC", comment: "")
+                return NSLocalizedString("Connect to a different car", comment: "")
             }
         }
         
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, firmwareUpdateInstructionsFor peripheral: CBPeripheral) -> String {
             // Provide firmware update instructions.
-            return "Firmware update instructions here."
+            return "Please update device firmware."
         }
         
-        func connectionView(_ connectionView: PlaygroundBluetoothConnectionView,
-                            willDisconnectFrom peripheral: CBPeripheral) {
+        public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, willDisconnectFrom peripheral: CBPeripheral) {
+            
+            respondToDisconnection()
         }
         
-        func connectionView(_ connectionView: PlaygroundBluetoothConnectionView,
-                            shouldConnectTo peripheral: CBPeripheral,
-                            withAdvertisementData advertisementData: [String: Any]?,
-                            rssi: Double) -> Bool {
+        public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, shouldConnectTo peripheral: CBPeripheral, withAdvertisementData advertisementData: [String: Any]?) -> Bool {
+            
+            respondToConnection()
+            
             return true
         }
-    }
+    
+//    }
 }
 
 
 extension RCViewController: PlaygroundLiveViewMessageHandler {
     
     public func liveViewMessageConnectionOpened(){
-        //      printLog("<Live View Message Connection Made>  ")
-        
+//        printLog("<liveViewMessageConnectionOpened>")
+        self.enableControlButtons(false)
     }
     
     public func liveViewMessageConnectionClosed() {
         commandsForAssessment.removeAll()
-        //PlaygroundPage.current.finishExecution()
+//        printLog("<liveViewMessageConnectionClosed>")
+//        enableControlButtons(true)
     }
     
     //Receive message from LiveView
     public func receive(_ message: PlaygroundValue) {
         
+//        printLog("received: \(message)")
+        
         //If there's no BT connection, abort mission
         if rcBluetooth.isConnected == false {
-            printLog("Connect To Car Before Sending Commands")
-//            send(.string(Constants.PROGRAM_FINISHED))
+            printLog("Connect to car before sending commands")
+            exitProgram()
             return
         }
         
@@ -498,7 +716,7 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
             if command.isEqual(CommandType.COMMAND_EXIT_PROGRAM.rawValue){
                 exitProgram()
             }
-            processCommand(message)
+                processCommand(message)
         }
             
         //If it's an integer …

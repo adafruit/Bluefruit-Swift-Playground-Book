@@ -1,9 +1,13 @@
 /*:#localized(key: "FirstProseBlock")
  **Goal**: Perform a series of specific movements with durations.
  
- Now, we’ll incorporate what we’ve learned to perform a specific series of movements.  Write code to do the following:
+ Now, we’ll incorporate what we’ve learned to perform a **specific series of movements**.
  
- Move forward for two seconds, turn left for half a second, move forward one second
+ Write code to do the following:
+ 
+ 1. Move forward for two seconds
+ 2. Turn left for half a second
+ 3. Move forward one second
  */
 //#-code-completion(everything, hide)
 //#-code-completion(identifier, show, moveForward(), turnLeft(), moveBack(), turnRight(), wait(), dance())

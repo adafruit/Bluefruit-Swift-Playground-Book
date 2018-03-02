@@ -68,7 +68,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     //Tells the delegate that the state of the central manager has changed.
     public func centralManagerStateDidChange(_ centralManager: PlaygroundBluetoothCentralManager) {
         if centralManager.state == .poweredOn {
-            isConnected = true
+//            isConnected = true
             printLog("Bluetooth is Enabled.")
        }else {
             printLog("Bluetooth is Disabled. Turn On Bluetooth in Control Panel.")
@@ -98,6 +98,8 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     // Tells the delegate that the central manager disconnected from a peripheral.
     public func centralManager(_ centralManager: PlaygroundBluetoothCentralManager, didDisconnectFrom peripheral: CBPeripheral, error: Error?) {
         blePeripheral = nil
+//        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Bluetooth Disconnected"), object: nil)
+        isConnected = false
     }
   
     // Invoked when you discover the peripheral’s available services.
@@ -131,6 +133,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
             if characteristic.uuid.isEqual(BLE_Characteristic_uuid_Tx) {
                 txCharacteristic = characteristic
                 isConnected = true
+//                NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Bluetooth Connected"), object: nil)
                 onCharacteristicsDiscovered?(peripheral)
             }
             if characteristic.uuid.isEqual(BLE_Characteristic_uuid_Rx)  {
@@ -139,7 +142,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
                 peripheral.discoverDescriptors(for: characteristic)
         }
     }
-  
+    
     // Invoked when you write data to a characteristic descriptor’s value.
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?){
       guard error == nil else {
@@ -177,7 +180,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
     blePeripheral!.writeValue(data, for: txCharacteristic!, type: CBCharacteristicWriteType.withResponse)
     DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(duration) ) {
       self.onDataWritten?()
-      self.stopForward()
+      self.stopMovement()
     }
   }
   
@@ -215,6 +218,11 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   
   // Mark:- Motion Functions
   
+    public func stopMovement(){
+        writeValue22(data: stopString)
+        NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": "Stop"])
+    }
+    
     public func moveForward(){
       printLog("<Forward>")
       writeValue22(data: forwardString)
