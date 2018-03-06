@@ -7,6 +7,5 @@ import PlaygroundSupport
 import PlaygroundBluetooth
 
 
-let rcViewController: RCViewController = RCViewController(1)
+let rcViewController: RCViewController = RCViewController(3)
 PlaygroundPage.current.liveView = rcViewController
-

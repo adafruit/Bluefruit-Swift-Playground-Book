@@ -14,8 +14,9 @@ public enum CommandType: String {
     case COMMAND_MOVE_BACKWARD  =  "command_moveBackward"
     case COMMAND_TURN_RIGHT     =  "command_turnRight"
     case COMMAND_TURN_LEFT      =  "command_turnLeft"
-    case COMMAND_PAUSE           = "command_pause"
+    case COMMAND_PAUSE          =  "command_pause"
     case COMMAND_EXIT_PROGRAM   =  "ExitProgram"
+    case COMMAND_CUSTOM_FUNCTION =  "CustomFunction"
     
 }
 
@@ -58,7 +59,6 @@ public class CommandManager: CommandPauseDelegate {
     }
     
     
-    
     public func moveForward(){
         command = .string(CommandType.COMMAND_MOVE_FORWARD.rawValue)
         sendCommand(command)
@@ -84,6 +84,11 @@ public class CommandManager: CommandPauseDelegate {
     
     public func exitProgram(){
         command = .string(CommandType.COMMAND_EXIT_PROGRAM.rawValue)
+        sendCommand(command)
+    }
+    
+    public func customFunctionCalled(){
+        command = .string(CommandType.COMMAND_CUSTOM_FUNCTION.rawValue)
         sendCommand(command)
     }
     

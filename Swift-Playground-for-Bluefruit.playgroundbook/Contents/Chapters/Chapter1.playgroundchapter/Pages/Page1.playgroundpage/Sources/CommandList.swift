@@ -28,7 +28,7 @@ public func wait() {
 }
 
 public func exitProgram() {
-  commandManager.exitProgram()
+    commandManager.exitProgram()
 }
 
 //public func wheelie(){
@@ -90,5 +90,14 @@ public func turnRight(_ seconds: Int) {
         let message = PlaygroundValue.integer(seconds)
         proxy.send(message)
         commandManager.turnRight()
+    }
+}
+    
+public func wait(_ seconds: Int) {
+    let page = PlaygroundPage.current
+    if let proxy = page.liveView as? PlaygroundRemoteLiveViewProxy {
+        let message = PlaygroundValue.integer(seconds)
+        proxy.send(message)
+        commandManager.pause()
     }
 }
