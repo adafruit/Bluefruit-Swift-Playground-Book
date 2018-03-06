@@ -619,10 +619,11 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
     
     func exitProgram(){
         
+        enableControlButtons(true)
+        
 //        printLog("exitProgram command count = \(commandsForAssessment.count)")
         //prevent evaluation if no commands sent
         if commandsForAssessment.count == 0 {
-            enableControlButtons(true)
             return
         }
         
@@ -638,7 +639,7 @@ public class RCViewController: UIViewController, UITextViewDelegate, PlaygroundL
         public func connectionView(_ connectionView: PlaygroundBluetoothConnectionView, itemForPeripheral peripheral: CBPeripheral, withAdvertisementData advertisementData: [String : Any]?) -> PlaygroundBluetoothConnectionView.Item {
             // Displays UI elements for connectivity
             let name = peripheral.name ?? NSLocalizedString("Unknown Device", comment: "")
-            let icon = UIImage(imageLiteralResourceName:"Images/adafruit_logo_small copy.png")
+            let icon = UIImage(imageLiteralResourceName:"Images/adafruit_logo2-83x83.png")
             let issueIcon = icon
             return PlaygroundBluetoothConnectionView.Item(name: name, icon: icon, issueIcon: issueIcon, firmwareStatus: nil, batteryLevel: nil)
         }
@@ -726,7 +727,7 @@ extension RCViewController: PlaygroundLiveViewMessageHandler {
             
         //If it's a dictionary …
         else if case let .dictionary(dict) = message { // Connect to robot
-            printLog("Send message; Command String attempt made")
+//            printLog("Send message; Command String attempt made")
             processCommand(message)
         }
             

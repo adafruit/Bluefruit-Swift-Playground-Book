@@ -47,14 +47,14 @@ public func assessment(_ playgroundValue:PlaygroundValue)->Bool{
     }
     
 //    let result: Bool = RCCommand.solutionChecker(commands, correctSolution)
-    var failureHints = [NSLocalizedString("Follow the instructions closely, using the specified durations for each command", comment: "")]
+    var failureHints = [NSLocalizedString("Remember to include a duration value between the left & right parentheses of each command", comment: "")]
 
     //Update assessment status
 //    PlaygroundPage.current.assessmentStatus = .pass(message: NSLocalizedString("### Pass! \n Now that’s what I call a victory dance!\n\n[**Next Page**](@next)", comment: ""))
 
     if(result){
         
-        PlaygroundPage.current.assessmentStatus = .pass(message: NSLocalizedString("### Yes! You did it...now on to the next lesson?...I think? \n\n[**Next Page**](@next)", comment: ""))
+        PlaygroundPage.current.assessmentStatus = .pass(message: NSLocalizedString("### Excellent! Now, let's build a function ... \n\n[**Next Page**](@next)", comment: ""))
     }
     else{
        // printLog("Fail")

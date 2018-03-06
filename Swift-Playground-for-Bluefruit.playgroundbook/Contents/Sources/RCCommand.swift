@@ -55,22 +55,22 @@ public class RCCommand: NSObject {
                 break
             case CommandType.COMMAND_MOVE_FORWARD.rawValue:
                 fourBytes = MOVE_FORWARD
-//                printLog("Sending: Forward, Duration: \(duration)")
+                printLog("Sending: Forward, Duration: \(duration)")
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_MOVE_FORWARD.rawValue])
                 break
             case CommandType.COMMAND_MOVE_BACKWARD.rawValue:
                 fourBytes = MOVE_BACKWARD
-//                printLog("Sending: Back, Duration: \(duration)")
+                printLog("Sending: Back, Duration: \(duration)")
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_MOVE_BACKWARD.rawValue])
                 break
             case CommandType.COMMAND_TURN_RIGHT.rawValue:
                 fourBytes = TURN_RIGHT
-//                printLog("Sending: Right, Duration: \(duration)")
+                printLog("Sending: Right, Duration: \(duration)")
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_TURN_RIGHT.rawValue])
                 break
             case CommandType.COMMAND_TURN_LEFT.rawValue:
                 fourBytes = TURN_LEFT
-//                printLog("Sending: Left, Duration: \(duration)")
+                printLog("Sending: Left, Duration: \(duration)")
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": CommandType.COMMAND_TURN_LEFT.rawValue])
             default:
                 break

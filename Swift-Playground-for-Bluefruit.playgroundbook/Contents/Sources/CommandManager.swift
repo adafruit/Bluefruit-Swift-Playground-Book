@@ -16,6 +16,7 @@ public enum CommandType: String {
     case COMMAND_TURN_LEFT      =  "command_turnLeft"
     case COMMAND_PAUSE          =  "command_pause"
     case COMMAND_EXIT_PROGRAM   =  "ExitProgram"
+    case COMMAND_CUSTOM_FUNCTION =  "CustomFunction"
     
 }
 
@@ -83,6 +84,11 @@ public class CommandManager: CommandPauseDelegate {
     
     public func exitProgram(){
         command = .string(CommandType.COMMAND_EXIT_PROGRAM.rawValue)
+        sendCommand(command)
+    }
+    
+    public func customFunctionCalled(){
+        command = .string(CommandType.COMMAND_CUSTOM_FUNCTION.rawValue)
         sendCommand(command)
     }
     
