@@ -185,7 +185,7 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   }
   
     // Write function
-    public func writeValue22(data: String){
+    public func writeValueFor(data: String){
       let data = (data as NSString).data(using: String.Encoding.utf8.rawValue)
           if let blePeripheral = blePeripheral{
             if let txCharacteristic = txCharacteristic {
@@ -219,48 +219,48 @@ public class RCBluetooth: NSObject, PlaygroundBluetoothCentralManagerDelegate, C
   // Mark:- Motion Functions
   
     public func stopMovement(){
-        writeValue22(data: stopString)
+        writeValueFor(data: stopString)
         NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Command"), object: ["Command": "Stop"])
     }
     
     public func moveForward(){
-      printLog("<Forward>")
-      writeValue22(data: forwardString)
+      printLog("Sending: Forward, Start")
+      writeValueFor(data: forwardString)
     }
     
     public func stopForward(){
-  //    printLog("<Forward Stopped>")
-      writeValue22(data: stopString)
+        printLog("Sending: Forward, Stop")
+      writeValueFor(data: stopString)
     }
     
     public  func moveBack(){
-    printLog("<Back>")
-    writeValue22(data: backString)
+    printLog("Sending: Back, Start")
+    writeValueFor(data: backString)
   }
 
     public func stopBack(){
- //     printLog("<Back Stopped>")
-      writeValue22(data: backStopString)
+        printLog("Sending: Back, Stop")
+      writeValueFor(data: backStopString)
     }
 
     public func turnRight(){
-      printLog("<Turning Right>")
-      writeValue22(data: rightString)
+      printLog("Sending: Turn Right, Start")
+      writeValueFor(data: rightString)
     }
 
     public func stopRight(){
-  //    printLog("<Right Stopped>")
-      writeValue22(data: rightStop)
+        printLog("Sending: Turn Right, Stop")
+      writeValueFor(data: rightStop)
     }
 
     public func turnLeft(){
-        printLog("<Turning Left>")
-         writeValue22(data: leftString)
+        printLog("Sending: Turn Left, Start")
+         writeValueFor(data: leftString)
     }
 
     public func stopLeft(){
-    //  printLog("<Left Stopped>")
-      writeValue22(data: leftStop)
+        printLog("Sending: Turn Left, Stop")
+      writeValueFor(data: leftStop)
     }
 
     func sendTouchEvent(_ tag: Int, isPressed: Bool) {
