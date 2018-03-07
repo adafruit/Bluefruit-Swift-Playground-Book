@@ -11,7 +11,7 @@
  
  */
 //#-code-completion(everything, hide)
-//#-code-completion(identifier, show, moveForward(), turnLeft(), moveBack(), turnRight(), wait(), dance())
+//#-code-completion(identifier, show, moveForward(), turnLeft(), moveBack(), turnRight(), wait())
 //#-hidden-code
 setup()
 //#-end-hidden-code
