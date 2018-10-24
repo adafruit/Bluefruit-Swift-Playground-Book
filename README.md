@@ -1,5 +1,5 @@
 # Bluefruit-Swift-Playground-Book
-Control your Bluefruit board via. iPad thru your Swift Playground book!
+Control your Bluefruit LE board via iPad through your Swift Playground book!
 
 Ever thought about creating a Swift playground book? If so, this is the learn guide for you! In the process of creating a Swift Playground book for use with Adafruit's Bluefruit devices, I noticed that there's very little public information available on the subject. Hopefully this guide will help share what I've learned with the world.
 
